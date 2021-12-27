@@ -1,0 +1,70 @@
+﻿using DriverActivityWeb.Contracts;
+using DriverActivityWeb.Data;
+using DriverActivityWeb.Helper;
+using DriverActivityWeb.Models;
+using DriverActivityWeb.ViewModels;
+using Microsoft.EntityFrameworkCore;
+
+namespace DriverActivityWeb.Services
+{
+    public class DriverCommonService : IDriverCommonService
+    {
+        private readonly ApplicationDbContext _dbContext;
+        private readonly IDriverStatusService driverStatusService;
+        private readonly IAppUserService appUserService;
+
+        public DriverCommonService(ApplicationDbContext dbContext,
+            IDriverStatusService driverStatusService,
+            IAppUserService appUserService)
+        {
+            this._dbContext = dbContext;
+            this.driverStatusService = driverStatusService;
+            this.appUserService = appUserService;
+        }
+
+        public async Task<IEnumerable<VehicleType>> GetVehicleType(int id = 0)
+        {
+            if (id > 0)
+                return await this._dbContext.VehicleType.Where(x => x.VehicleID == id).ToListAsync();
+            else
+                return await this._dbContext.VehicleType.ToListAsync();
+
+        }
+
+        public async Task<PaginatedList<ViewDriverDeliveryStatusVM>> GetDriverDeliveryStatus(SearchEntity message)
+        {
+            var deliverStatus = await this.driverStatusService.GetDriverDeliveryStatus(message);
+
+            if (null != deliverStatus && deliverStatus.Count > 0)
+            {
+                var staffIds = deliverStatus.Where(w => AppUtility.IsNotEmpty(w.StaffId) && Convert.ToInt32(w.StaffId) > 0)
+                                    .Select(x => Convert.ToInt32(x.StaffId)).ToList();
+                var driverOtherData = await this.appUserService.GetData(new SearchEntity { StaffIds = staffIds });
+                foreach (var item in driverOtherData)
+                {
+                    var exsitItem = deliverStatus.Where(x => AppUtility.IsNotEmpty(x.StaffId) 
+                                && Convert.ToInt32(x.StaffId) == Convert.ToInt32(item.StaffId))
+                                .FirstOrDefault();
+                    if(null != exsitItem)
+                    {
+                        exsitItem.UserId = item.UserId;
+                        exsitItem.CreatedDate = item.CreatedDate;
+                        exsitItem.StaffId = item.StaffId;
+                        exsitItem.QID = item.QID;
+                        exsitItem.VehicleID = item.VehicleID;
+                        exsitItem.VehicleName = item.VehicleName;
+                        byte[] imgContent = item.ImgContent;
+                        if(imgContent != null && imgContent.Count() > 0)
+                        {
+                            string base64String = Convert.ToBase64String(imgContent, 0, imgContent.Length);
+                            exsitItem.ProfilePicture = "data:image/png;base64," + base64String;
+                        }
+                    }
+                }
+            }
+            return deliverStatus;
+
+        }
+
+    }
+}

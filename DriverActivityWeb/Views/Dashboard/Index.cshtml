@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+
+@section Styles{
+<link rel="stylesheet" href="~/lib/cropperjs/dist/cropper.css" />
+<link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css"/>
+<style type="text/css">
+    
+</style>
+}
+
+
+<div class="text-center">
+    <section>
+        <div class="container">
+            <div id="driver-data-container">
+                <table id="tbl-driver" cellpadding='0' cellspacing='0' width="100%" 
+                class="display table table-bordered table-striped table-hover compact"></table>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+
+@section Scripts{
+<script type="text/javascript" src="~/lib/DataTables/datatables.min.js"></script>
+<script src="~/js/utilities/jq-table-util.js"></script>
+<script src="~/js/app-utilies/driver-utility.js"></script>
+
+<script type="text/javascript">
+
+    driverUtil.createDriverTabel(driverUtil.getDriverDeliveryColumnDefs());
+    driverUtil.getDriverData(commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA);
+
+</script>
+}

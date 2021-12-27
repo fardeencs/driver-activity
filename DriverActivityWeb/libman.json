@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "defaultProvider": "unpkg",
+  "libraries": [
+    {
+      "library": "dropzone@6.0.0-beta.2",
+      "destination": "wwwroot/lib/dropzone/"
+    },
+    {
+      "library": "moment@2.29.1",
+      "destination": "wwwroot/lib/moment/"
+    },
+    {
+      "library": "validate.js@0.13.1",
+      "destination": "wwwroot/lib/validate.js/"
+    },
+    {
+      "library": "sweetalert2@11.3.0",
+      "destination": "wwwroot/lib/sweetalert2/"
+    },
+    {
+      "library": "moment-timezone@0.5.34",
+      "destination": "wwwroot/lib/moment-timezone/"
+    },
+    {
+      "library": "toastr@2.1.4",
+      "destination": "wwwroot/lib/toastr/"
+    },
+    {
+      "library": "select2@4.1.0-rc.0",
+      "destination": "wwwroot/lib/select2/"
+    },
+    {
+      "library": "lodash@4.17.21",
+      "destination": "wwwroot/lib/lodash/"
+    },
+    {
+      "library": "cropperjs@1.5.12",
+      "destination": "wwwroot/lib/cropperjs/"
+    }
+  ]
+}
