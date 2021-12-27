@@ -12,24 +12,27 @@ namespace DriverActivityWeb.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
-        private readonly IAppUserImageService _appUserImageService;
+        private readonly IAppUserFileService _appUserFileService;
         private readonly IAppUserService appUserService;
         private readonly IDriverCommonService driverCommonService;
         private readonly IApplicationService applicationService;
+        private readonly IDriverEODService driverEODService;
 
         public HomeController(ILogger<HomeController> logger,
             ApplicationDbContext dbContext,
-            IAppUserImageService appUserImageService,
+            IAppUserFileService appUserImageService,
             IAppUserService appUserService,
             IDriverCommonService driverCommonService,
-            IApplicationService applicationService)
+            IApplicationService applicationService,
+            IDriverEODService driverEODService)
         {
             _logger = logger;
             this._dbContext = dbContext;
-            this._appUserImageService = appUserImageService;
+            this._appUserFileService = appUserImageService;
             this.appUserService = appUserService;
             this.driverCommonService = driverCommonService;
             this.applicationService = applicationService;
+            this.driverEODService = driverEODService;
         }
 
        
@@ -63,14 +66,35 @@ namespace DriverActivityWeb.Controllers
 
            
             byte[]? imageBytes = file.ConvertToByteArray();
-            AppUserImageVM appUserImage = new AppUserImageVM
+            AppUserFileVM appUserImage = new AppUserFileVM
             {
                 SessionUserId = 1,
                 IsActive = false,
                 ImgContent = imageBytes
             };
 
-            var response = await this._appUserImageService.SaveOrUpdateData(appUserImage);
+            var response = await this._appUserFileService.SaveOrUpdateProfileData(appUserImage);
+            return Json(new ResponseEntity(response));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveSignatureImage(long? userId)
+        {
+
+            var file = Request.Form.Files[0];
+            if (file == null)
+                throw new BadHttpRequestException("File not found");
+
+
+            byte[]? imageBytes = file.ConvertToByteArray();
+            AppUserFileVM appUserImage = new AppUserFileVM
+            {
+                SessionUserId = 1,
+                IsActive = false,
+                ImgContent = imageBytes
+            };
+
+            var response = await this._appUserFileService.SaveOrUpdateSignatureData(appUserImage);
             return Json(new ResponseEntity(response));
         }
 
@@ -88,6 +112,44 @@ namespace DriverActivityWeb.Controllers
             var response = await this.appUserService.SaveOrUpdateData(request);
             return Json(new ResponseEntity(response));
         }
+
+
+        public IActionResult DriverEOD()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateDriverEOD([FromBody] DriverEodVM request)
+        {
+            if (request == null)
+                throw new BadHttpRequestException("Request params not found");
+
+            request.SessionUserId = 1;
+            AppUserFileVM appUserImage = new AppUserFileVM
+            {
+                SessionUserId = 1,
+                IsActive = false,
+                FileString = request.Signature
+            };
+
+            var fileResponse = await this._appUserFileService.SaveOrUpdateSignatureData(appUserImage);
+            request.FileID = fileResponse.FileID;
+            var response = await this.driverEODService.SaveOrUpdateData(request);
+            return Json(new ResponseEntity(response));
+        }
+
+        public async Task<IActionResult> GetUserSignature(string id)
+        {
+            if (AppUtility.IsEmpty(id))
+                throw new KeyNotFoundException("File ID not found");
+
+            var response = await this._appUserFileService.ReadUserSignature(id);
+            return Json(new ResponseEntity(response));
+        }
+
+
 
         public IActionResult Privacy()
         {

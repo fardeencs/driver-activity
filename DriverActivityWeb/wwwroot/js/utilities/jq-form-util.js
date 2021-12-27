@@ -1038,7 +1038,7 @@ const formUtilities = (function () {
                 if (colGroup.hasOwnProperty(prop)) {
                     let columnArr = [];
                     colGroup[prop].forEach(item => {
-                        const header = allUIControls.find(u => u.backEndName === item.uibackendName)?.txtValue ?? item.header;;
+                        const header = allUIControls?.find(u => u.backEndName === item.uibackendName)?.txtValue ?? item.header;;
                         const jsonVal = item?.jsonFiled ?? null;
                         const jsonValue = jsonVal === 'true' ? true : jsonVal === 'false' ? false : jsonVal;
                         let def = {
@@ -1314,6 +1314,10 @@ const formUtilities = (function () {
         return document.querySelector("form#" + formId);
     };
 
+    const getControl = ({ colDef, rowId, dir, labelWidthClazz, ctrlWidthClazz, jsonData }) => {
+        return createControl(colDef, rowId, dir, labelWidthClazz, ctrlWidthClazz, jsonData);
+    };
+
     let result = {};
 
     result.CONTROL_TYPES = CONTROL_TYPES;
@@ -1335,6 +1339,7 @@ const formUtilities = (function () {
     result.setConstraint = setConstraint;
     result.createColDef = createColDef;
     result.getFormElem = getFormElem;
+    result.getControl = getControl;
 
     return result;
 

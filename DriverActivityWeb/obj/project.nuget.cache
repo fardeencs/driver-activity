@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "N5fKS5XKQsn8sTbCQo2Tdx+spdMWyrHcToMMRla5I0hrUKymL3RVo7uM3DX4lgzeWrVLnZimKkjUf51RgfG2yA==",
+  "dgSpecHash": "rCyPe/22EkY0SDRN4cDicZ1TzE0L/CfOkha39u7O9DWFSRmdZ1lG135evnA+BztKSoLrW6DOuBoF6wG9Rk8LyA==",
   "success": true,
-  "projectFilePath": "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\DriverActivityWeb.csproj",
+  "projectFilePath": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\DriverActivityWeb.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\admin\\.nuget\\packages\\automapper\\10.1.1\\automapper.10.1.1.nupkg.sha512",
     "C:\\Users\\admin\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\8.1.1\\automapper.extensions.microsoft.dependencyinjection.8.1.1.nupkg.sha512",

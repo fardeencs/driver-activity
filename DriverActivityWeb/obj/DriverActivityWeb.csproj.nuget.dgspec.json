@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\DriverActivityWeb.csproj": {}
+    "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\DriverActivityWeb.csproj": {}
   },
   "projects": {
-    "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\DriverActivityWeb.csproj": {
+    "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\DriverActivityWeb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\DriverActivityWeb.csproj",
+        "projectUniqueName": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\DriverActivityWeb.csproj",
         "projectName": "DriverActivityWeb",
-        "projectPath": "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\DriverActivityWeb.csproj",
+        "projectPath": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\DriverActivityWeb.csproj",
         "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "C:\\SourceCode\\freelance\\QPost\\DriverActivity\\DriverActivityWeb\\obj\\",
+        "outputPath": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

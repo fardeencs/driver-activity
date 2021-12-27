@@ -14,11 +14,12 @@ namespace DriverActivityWeb.Helper
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });*/
 
-            builder.Services.AddScoped<IAppUserImageService, AppUserImageService>();
+            builder.Services.AddScoped<IAppUserFileService, AppUserFileService>();
             builder.Services.AddScoped<IAppUserService, AppUserService>();
             builder.Services.AddScoped<IDriverCommonService, DriverCommonService>();
             builder.Services.AddScoped<IDriverStatusService, DriverStatusService>();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
+            builder.Services.AddScoped<IDriverEODService, DriverEODService>();
             
         }
     }

@@ -15,6 +15,7 @@ namespace DriverActivityWeb.Models
         public string? NameAr { get; set; }
         public int? StaffId { get; set; }
         public int? QID { get; set; }
+        [ForeignKey("VehicleType")]
         public int? VehicleID { get; set; }
 
         public bool IsActive { get; set; } = true;

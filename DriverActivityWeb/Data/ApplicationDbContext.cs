@@ -15,6 +15,8 @@ namespace DriverActivityWeb.Data
         public DbSet<AppUserImage> AppUserImage { get; set; }
         public DbSet<VehicleType> VehicleType { get; set; }
         public DbSet<SystemSetting> SystemSetting { get; set; }
+        public DbSet<DriverEod> DriverEod { get; set; }
+        public DbSet<AppUserSignature> AppUserSignature { get; set; }
 
     }
 

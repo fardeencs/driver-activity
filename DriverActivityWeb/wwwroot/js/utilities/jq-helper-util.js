@@ -152,6 +152,7 @@
     const STATUS_MASTER_TYPE = {
         SUBMIT: "SUBMIT",
         EDIT: "EDIT",
+        DRIVER_EOD: 'DRIVER_EOD'
     };
     
     const FILES_TYPE = {
@@ -182,7 +183,11 @@
         UPLOAD_DRIVER_IMAGE: `/Home/SaveProfileImage`,
         SAVE_DRIVER_FORM: `/Home/SaveOrUpdateUserData`,
         UPDATE_DRIVER_FORM: ``,
+        UPLOAD_DRIVER_SIGNATURE: `/Home/SaveSignatureImage`,
+        SAVE_DRIVER_EOD_FORM: `/DriverEod/SaveOrUpdateDriverEOD`,
         LOAD_DRIVER_DATA: `/Home/GetDriverData`,
+        GET_USER_SIGNATURE: `/DriverEod/GetUserSignature`,
+        GET_DRIVER_EOD: `/DriverEod/SearchDriverData`,
         GET_DRIVER_DELIVERY_STATUS_DATA: `/Dashboard/GetDriverDeliveryStatus`,
     };
 

@@ -3180,8 +3180,8 @@ tr.selected td:before {
 
 .cards .cell-avatar {
     border-radius: 50%;
-    width: 10rem;
-    height: 10rem;
+    width: 8rem;
+    height: 8rem;
 }
 
 .cards .complaint-actions i {
@@ -3197,8 +3197,8 @@ tr.selected td:before {
     display: flex;
     flex-direction: row;
     order: 1;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .cards .flex-column-one {
@@ -3431,3 +3431,26 @@ div.dataTables_wrapper div.dataTables_paginate {
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
     display: flex;
 }
+
+.profile-pic-after-gradiant {
+    position: relative;
+}
+
+    .profile-pic-after-gradiant img {
+        width: 7rem;
+        height: 7rem;
+        border-radius: 50%;
+    }
+
+    .profile-pic-after-gradiant::after {
+        content: "";
+        width: 7.7rem;
+        height: 7.7rem;
+        border-radius: 50%;
+        background: linear-gradient( 90deg, rgb(0 46 108) 0%, rgba(205, 220, 57, 1) 100%, rgba(0, 212, 255, 1) 100% );
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        z-index: -1;
+    }

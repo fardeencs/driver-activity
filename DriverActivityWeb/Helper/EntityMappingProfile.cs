@@ -8,7 +8,9 @@ namespace DriverActivityWeb.Helper
     {
         public EntityMappingProfile()
         {
-            CreateMap<AppUserImage, AppUserImageVM>().ReverseMap();
+            CreateMap<AppUserImage, AppUserFileVM>().ReverseMap();
+            CreateMap<AppUserSignature, AppUserFileVM>().ReverseMap();
+            CreateMap<DriverEod, DriverEodVM>().ReverseMap();
             CreateMap<AppUser, AppUserVM>()
                 //.ForMember(
                 //    dest => Convert.ToInt32(dest.QID),

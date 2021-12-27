@@ -9,8 +9,6 @@ namespace DriverActivityWeb.Models
         [Key]
         [Required]
         public string FileID { get; set; }
-        //[ForeignKey("AppUser")]
-        //public long UserId { get; set; }
         [Required]
         public byte[] ImgContent { get; set; }
         public bool IsActive { get; set; } = true;

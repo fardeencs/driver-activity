@@ -1,9 +1,9 @@
-﻿/// <reference path="../utilities/jq-client-util.js" />
-const driverUtil = (function (options) {
+﻿const driverUtil = (function (options) {
 
     let uploadedFiles = []
         ;
-    let dialogElem = null, controlsConstrain = [], allConstraint = {}, settingValues = [], fileID = null
+    let dialogElem = null, controlsConstrain = [], allConstraint = {}, settingValues = [], fileID = null,
+        signaturePad = null
         ;
 
     const btnSubmitId = 'btn-submit-form',
@@ -14,7 +14,8 @@ const driverUtil = (function (options) {
         updateSectionId = 'view_update_section',
         driverContainerId = 'driver-container',
         tblDriverId = 'tbl-driver',
-        NO_DATA = '...'
+        NO_DATA = '...',
+        driverSignPadId = 'driverSignPad'
         ;
 
     let uiConrols = {
@@ -53,7 +54,7 @@ const driverUtil = (function (options) {
         //return txtDir === 'RTL' ? commonUtil.getLocalUtcDateStringAr(val, format) : commonUtil.getLocalUtcDateStringEn(val, format);
     };
 
-    const getDriverColDef = ({ vehicleList}) => {
+    const getDriverColDef = ({ vehicleList }) => {
         const viewColDef = [
             {
                 controlName: 'nameEn',
@@ -109,7 +110,7 @@ const driverUtil = (function (options) {
                 //uibackendName: 'AGENDA_COMPLAINT',
                 controlType: 'BUTTON',
                 rowOrder: 4,
-                columnOrder: 1
+                columnOrder: 1,
             },
         ];
 
@@ -117,25 +118,103 @@ const driverUtil = (function (options) {
         return { viewColDef, constraints };
     };
 
-    const driverActionTmpl = (data, type, row) => {
-        const { userId, staffID, } = row;
-        const pkId = userId;
-        
-        const template = `
-                <section class="sec-center0" id="action__section__${pkId}" data-key="${pkId}">
-                    <div style="display:flex; align-items: center;">
-                       
-                        <button class="view btn btn-primary complaint-view" title='View'>
-                            <i class="view bi bi-eye"></i>
-                        </button>
-                        <button class="view btn btn-primary complaint-view" title='View'>
-                            <i class="view bi bi-pencil"></i>
-                        </button>
+    const getDriverEODColDef = () => {
+        const viewColDef = [
+            {
+                controlName: 'totalDelivery',
+                header: 'Total Delivery',
+                //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
+                controlType: 'NUMBER',
+                //rowOrder: 1,
+                columnOrder: 1,
+            },
+            {
+                controlName: 'delivered',
+                header: 'Delivered',
+                //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
+                controlType: 'NUMBER',
+                //rowOrder: 2,
+                columnOrder: 1,
+            },
+            {
+                controlName: 'failedDelivery',
+                header: 'Failed Delivery',
+                //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
+                controlType: 'NUMBER',
+                //rowOrder: 3,
+                columnOrder: 1,
+            },
+            {
+                controlName: 'drops',
+                header: 'No. of Drops',
+                //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
+                controlType: 'NUMBER',
+                //rowOrder: 4,
+                columnOrder: 1,
+            },
+            //{
+            //    controlName: 'driverEODDetailsSection',
+            //    //header: 'Driver Sign',
+            //    //uibackendName: 'AGENDA_COMPLAINT',
+            //    controlType: 'DIV',
+            //    //rowOrder: 3,
+            //    columnOrder: 1,
+            //},
+            {
+                controlName: 'additionalDelivery',
+                header: 'Additional Delivery',
+                //uibackendName: 'AGENDA_COMPLAINT',
+                controlType: 'NUMBER_BOX',
+                //rowOrder: 3,
+                columnOrder: 1,
+                isRequired: true,
+            },
+            {
+                controlName: 'remarks',
+                header: 'Comments',
+                //uibackendName: 'AGENDA_COMPLAINT',
+                controlType: 'TEXT_AREA',
+                //rowOrder: 3,
+                columnOrder: 1,
+                isRequired: true,
+            },
+            {
+                controlName: 'profilePictureSection',
+                header: '',
+                //uibackendName: 'AGENDA_COMPLAINT ,
+                controlType: 'DIV',
+                //rowOrder: 3,
+                columnOrder: 2,
+            },
+            {
+                controlName: 'driverSignSection',
+                header: 'Driver Sign',
+                //uibackendName: 'AGENDA_COMPLAINT ,
+                controlType: 'DIV',
+                //rowOrder: 3,
+                columnOrder: 2,
+                isRequired: true,
+            },
+            //{
+            //    controlName: 'driverEODActionSection',
+            //    //header: 'Driver Sign',
+            //    //uibackendName: 'AGENDA_COMPLAINT ,
+            //    controlType: 'DIV',
+            //    //rowOrder: 3,
+            //    columnOrder: 3,
+            //},
+            /*{
+                controlName: `BTN_SAVE_EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`,
+                header: 'Submit',
+                //uibackendName: 'AGENDA_COMPLAINT',
+                controlType: 'BUTTON',
+                rowOrder: 2,
+                columnOrder: 3
+            },*/
+        ];
 
-                    </div>
-                </section>
-                `;
-        return template;
+        const constraints = formUtilities.setConstraint({ controls: viewColDef });
+        return { viewColDef, constraints };
     };
 
     const getDriverColumnDefs = () => {
@@ -183,19 +262,18 @@ const driverUtil = (function (options) {
             //    //    return txtDir === 'RTL' ? created?.name : created?.nameEn;
             //    //}
             //},
-            
+
         ];
     };
 
     const getDriverDeliveryColumnDefs = () => {
-        
         return [
             { "title": "ID", "data": "userId", visible: false },
-            { "title": 'Staff ID', "data": "staffId", className: 'cell-staffID', visible: false},
+            { "title": 'Staff ID', "data": "staffId", className: 'cell-staffID', visible: false },
             {
                 "title": 'Profile Image', "data": "profilePicture",
                 className: "has-flex-column has-no-label row-one-column-one text-capitalize cell-profilePicture",
-                "width": "13%",
+                "width": "12%",
                 "render": function (data, type, row) {
                     const { profilePicture } = row;
                     return `<img src="${profilePicture ?? '../images/avatar.png'}" class="cell-avatar" />`;
@@ -207,21 +285,56 @@ const driverUtil = (function (options) {
                 className: "has-flex-column has-no-label row-one-column-two text-capitalize cell-vehicleName",
                 "render": function (data, type, row) {
                     const { vehicleName } = row;
-                    return vehicleName ?? NO_DATA;
+                    return `Driver (${vehicleName ?? NO_DATA})`;
                 }
             },
             {
                 "title": 'Duty Status', "data": "dutyStatus",
                 className: "has-flex-column has-no-label row-one-column-two text-capitalize cell-dutyStatus",
+                "width": "10%",
                 "render": function (data, type, row) {
                     const { dutyStatus } = row;
-                    return `<span class="cell-btn-dutyStatus bg-${dutyStatus}"><i class="bi bi-plus fa-fw" aria-hidden="true"></i> ${dutyStatus ==  'OnDuty' ? 'ON ROAD' : 'FINISHED'}</span>`;
+                    return `<span class="cell-btn-dutyStatus bg-${dutyStatus}"><i class="bi bi-plus fa-fw" aria-hidden="true"></i> ${dutyStatus == 'OnDuty' ? 'ON ROAD' : 'FINISHED'}</span>`;
                 }
             },
-            { "title": 'Total', "data": "total", "width": "10%", className: "row-two has-flex-column cell-total" },
-            { "title": 'Delivered', "data": "delivered", "width": "10%", className: "row-two has-flex-column cell-delivered" },
-            { "title": 'Failed', "data": "failed", "width": "10%", className: "row-two has-flex-column cell-failed" },
+            {
+                "title": 'Total', "data": "total", className: "row-two has-flex-column cell-total",
+                "width": "10%",
+            },
+            {
+                "title": 'Delivered', "data": "delivered", className: "row-two has-flex-column cell-delivered",
+                "width": "10%",
+            },
+            {
+                "title": 'Failed', "data": "failed", className: "row-two has-flex-column cell-failed",
+                "width": "10%",
+            },
+            {
+                "title": 'Drops', "data": "drops", className: "row-two has-flex-column cell-drops",
+                "width": "10%",
+            },
         ];
+    };
+
+    const driverActionTmpl = (data, type, row) => {
+        const { userId, staffID, } = row;
+        const pkId = userId;
+
+        const template = `
+                <section class="sec-center0" id="action__section__${pkId}" data-key="${pkId}">
+                    <div style="display:flex; align-items: center;">
+                       
+                        <button class="view btn btn-primary complaint-view" title='View'>
+                            <i class="view bi bi-eye"></i>
+                        </button>
+                        <button class="view btn btn-primary complaint-view" title='View'>
+                            <i class="view bi bi-pencil"></i>
+                        </button>
+
+                    </div>
+                </section>
+                `;
+        return template;
     };
 
     const handleReviewFormSubmit = (form, formConstraints, colDef, extraValidationCntrolsName) => {
@@ -309,7 +422,7 @@ const driverUtil = (function (options) {
 
             if (extraValidationCntrolsName && extraValidationCntrolsName.length > 0) {
                 extraValidationCntrolsName.forEach(col => {
-                    const { field, selectedValue, selectedField } = col;
+                    const { field, selectedValue, selectedField, checkTrue } = col;
                     const ctrlId = `${field}`;
                     const constraint = formConstraints[ctrlId];
                     if (!_.isEmpty(constraint)) {
@@ -319,6 +432,8 @@ const driverUtil = (function (options) {
                             ctrlVal = eval(selectedValue);
                         else if (selectedField)
                             ctrlVal = $(`#${field}`).val();
+                        else if (checkTrue)
+                            ctrlVal = eval(checkTrue);
 
                         let ctrlError = {};
                         const presenceConstraint = constraint['presence'];
@@ -339,7 +454,10 @@ const driverUtil = (function (options) {
                                     delete ctrlError['presence'];
                                 }
                             }
-
+                            else if (checkTrue && eval(checkTrue)) {
+                                if (eval(checkTrue))
+                                    delete ctrlError['presence'];
+                            }
                         }
                         if (_.isEmpty(ctrlError)) {
                             delete errors[ctrlId];
@@ -361,28 +479,18 @@ const driverUtil = (function (options) {
 
     };
 
-    const getFormElem = (formId) => {
-        return document.querySelector("form#" + formId);
+    const resizeCanvas = (canvasId) => {
+        if (!canvasId) return;
+        canvas = document.getElementById(canvasId);
+        const ratio = Math.max(window.devicePixelRatio || 1, 1);
+        canvas.width = canvas.offsetWidth * ratio;
+        canvas.height = canvas.offsetHeight * ratio;
+        canvas.getContext("2d").scale(ratio, ratio);
     };
 
-    const autoDiscover = (isAuto) => {
-        Dropzone.autoDiscover = isAuto ?? false;
-    };
-
-    const fileUploadParam = () => {
-        return "files";
-    };
-
-    const clearDropzone = (id) => {
-        //Dropzone.forElement('#upload-dropzone').removeAllFiles(true);
-        Dropzone.forElement(`#${id}`).removeAllFiles(true);
-        $('.dropzone')[0].dropzone.files.forEach(function (file) {
-            if (file) {
-                file.previewElement.remove();
-            }
-        });
-        $('.dropzone').removeClass('dz-started');
-        uploadedFiles = [];
+    const openSignatureWindow = (base64URL) => {
+        const win = window.open();
+        win.document.write('<iframe src="' + base64URL + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
     };
 
     const saveFormData = ({ reqData, btnEventObj, url }) => {
@@ -417,7 +525,7 @@ const driverUtil = (function (options) {
                         const event = new CustomEvent(`CLICK_${eventKey}`, { detail: { type: `type__${eventKey}`, data: { formData: data } } });
                         evElem.dispatchEvent(event);*/
                     }
-                    
+
 
                     if (data) {
                         /*const { dailogId } = complaintUtil.getAttributes();
@@ -439,8 +547,7 @@ const driverUtil = (function (options) {
         const btnInput = document.querySelector(`#${btnId}`);
         btnInput.myParam = btnEventObj;
         document.getElementById(btnId).addEventListener(eventName, ev => {
-            //const btnEventObjItem = ev.detail?.data?.btnEventObj;
-            const btnEventObjItem = ev.currentTarget.myParam;
+            const btnEventObjItem = ev.currentTarget?.myParam;
             if (btnEventObjItem) {
                 const { liId, formConstraints, colDef, extraValidationCntrolsName } = btnEventObjItem;
                 const eventKey = liId.replace('EVENT_', '');
@@ -451,9 +558,10 @@ const driverUtil = (function (options) {
                 const isValid = handleReviewFormSubmit(formElem, formConstraints, colDef, extraValidationCntrolsName);
                 if (!isValid) return;
 
-                if (!driverUtil.fileID)
-                    return notificationUtil.popup({ title: "Error", body: "Kindly upload the profile picture." });
-
+                if (eventKey === commonUtil.STATUS_MASTER_TYPE.SUBMIT) {
+                    if (!driverUtil.fileID)
+                        return notificationUtil.popup({ title: "Error", body: "Kindly upload the profile picture." });
+                }
                 let reqData = formValues;
                 /*reqData = {
                     ...reqData,
@@ -466,6 +574,12 @@ const driverUtil = (function (options) {
                         fileID: driverUtil.fileID
                     };
                 }
+                else if (commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD == eventKey) {
+                    reqData = {
+                        ...reqData,
+                        signature: signaturePad.toDataURL('image/png')
+                    };
+                }
 
                 saveFormData({ reqData, btnEventObj, url });
             }
@@ -474,15 +588,53 @@ const driverUtil = (function (options) {
     };
 
     const createDriverForm = ({ eventId, title, rowData, extraValidationCntrolsName, vehicleList }) => {
-        const { viewColDef: colDef, constraints } = getDriverColDef({ vehicleList });
+        let columnsDef = null, url = null;
+            extraValidationCntrolsName = extraValidationCntrolsName ?? [],
+            rowData = rowData ?? {}
+            ;
+        const eventKey = eventId.replace('EVENT_', '');
+        switch (eventKey) {
+            case commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD:
+                columnsDef = getDriverEODColDef();
+                url = commonUtil.APP_URL.SAVE_DRIVER_EOD_FORM;
+                let profilePictureSectionCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'profilePictureSection');
+                let driverSignSectionCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'driverSignSection');
+                let eodRemarksCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'remarks');
+                if (profilePictureSectionCtrl) {
+                    profilePictureSectionCtrl.isCellMsg = false;
+                    profilePictureSectionCtrl.isLabel = false;
+                }
+                if (eodRemarksCtrl) {
+                    eodRemarksCtrl.rows = 4;
+                }
 
+                if (driverSignSectionCtrl) {
+                    driverSignSectionCtrl = {
+                        ...driverSignSectionCtrl,
+                        field: driverSignSectionCtrl.controlName,
+                        type: driverSignSectionCtrl.controlType,
+                        checkTrue: '!signaturePad.isEmpty()'
+                    }
+                    //driverSignSectionCtrl['selectedField'] = officerColDef.field;
+                    extraValidationCntrolsName.push(driverSignSectionCtrl);
+                }
+                break;
+            case commonUtil.STATUS_MASTER_TYPE.SUBMIT:
+                columnsDef = getDriverColDef({ vehicleList });
+                url = commonUtil.APP_URL.SAVE_DRIVER_FORM;
+                break;
+            default:
+                break;
+        }
+
+        const { viewColDef: colDef, constraints } = columnsDef;
 
         if (!colDef || colDef?.length <= 0)
             return notificationUtil.warning("column(s) defination not found.");
 
         const { controlsDef, isRowColView } = formUtilities.createColDef({ controls: colDef });
-        const { dailogId, uploadDropzoneId } = driverUtil.getAttributes();
-        //const { constraint, columnDef, isRowColView } = getControlConstraints(backendName) ?? {};
+        const allCols = _.flattenDeep(controlsDef?.map(x => x.column));
+
         const ctrlId = `FORM_${eventId}`;
         const formDef = {
             ctrlId,
@@ -491,48 +643,151 @@ const driverUtil = (function (options) {
             jsonData: rowData,
             colDef: controlsDef
         };
-        let btnEventObj = {
-            btnId: `BTN_SAVE_${eventId}`,
-            btnLabel: uiConrols.btnSubmit,
-            eventName: 'click',
-            title,
-            liId: `${eventId}`,
-            formConstraints: constraints,
-            data: rowData,
-            url: commonUtil.APP_URL.SAVE_DRIVER_FORM,
-            colDef: controlsDef,
-            extraValidationCntrolsName
-        };
-        //const allCols = _.flattenDeep(controlsDef?.map(x => x.column));
+
+        let btnEventObj = {};
+        const submitBtnColDef = allCols.find(x => x.controlType === 'BUTTON');
+        if (submitBtnColDef) {
+            btnEventObj = {
+                ...btnEventObj,
+                btnId: `BTN_SAVE_${eventId}`,
+                btnLabel: uiConrols.btnSubmit,
+                eventName: 'click',
+                title,
+                liId: `${eventId}`,
+                formConstraints: constraints,
+                data: rowData,
+                url,
+                colDef: controlsDef,
+                extraValidationCntrolsName
+            };
+        }
 
         const body = formUtilities.createViewWindow(formDef);
         document.querySelector(`#${driverContainerId}`).append(body);
+        const formElem = formUtilities.getFormElem(ctrlId);
+
+        if (eventKey === commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD) {
+            const driverSignCtrl = allCols?.find(x => x.controlName === 'driverSignSection');
+            const profilePictureSectionCtrl = allCols?.find(x => x.controlName === 'profilePictureSection');
+            if (driverSignCtrl) {
+                const canvas = document.createElement('canvas');
+                canvas.id = driverUtil.driverSignPadId;
+                canvas.classList.add('driver-signature-pad')
+                canvas.setAttribute("width", '600');
+                canvas.setAttribute("height", '300');
+
+                const driverSignSectionElem = document.getElementById(driverSignCtrl.controlName);
+                driverSignSectionElem.append(canvas);
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgb(250,250,250)'
+                });
+            }
+
+            if (profilePictureSectionCtrl) {
+                const profilePictureSectionElm = document.getElementById(profilePictureSectionCtrl.controlName);
+                if (profilePictureSectionElm) {
+                    const { profilePicture, staffId, createdDate, name } = rowData ?? {};
+                    profilePictureSectionElm.innerHTML = "";
+                    profilePictureSectionElm.classList.add('edo-profile-section');
+                    const profileTemplate = ` <div class="q-column">
+                                                  <div class="profile-pic-after-gradiant">
+                                                    <img src="${profilePicture ?? '../images/avatar.png'}" />
+                                                  </div>                                                                
+                                              </div>
+                                              <div class="q-column">
+                                                <div>Name: ${name ?? NO_DATA} </div>
+                                                <div>Staff ID: ${staffId ?? NO_DATA}</div>
+                                                <div>Created Date: ${createdDate ?? NO_DATA} </div>
+                                              </div>`;
+                    profilePictureSectionElm.innerHTML = profileTemplate;
+                }
+            }
+
+            if (formElem) {
+                const eodBtnSubmitColDef = {
+                    field: `BTN_SAVE_EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`,
+                    header: 'Save & Approve',
+                    //uibackendName: 'AGENDA_COMPLAINT',++++
+                    type: 'BUTTON',
+                };
+                btnEventObj = {
+                    ...btnEventObj,
+                    btnId: `BTN_SAVE_${eventId}`,
+                    btnLabel: eodBtnSubmitColDef.header,
+                    eventName: 'click',
+                    title,
+                    liId: `${eventId}`,
+                    formConstraints: constraints,
+                    data: rowData,
+                    url,
+                    colDef: controlsDef,
+                    extraValidationCntrolsName
+                };
+                const eodBtnSubmitCtrl = formUtilities.getControl({ colDef: eodBtnSubmitColDef, rowId: 100, textDirection: uiConrols.txtDir });
+                if (eodBtnSubmitCtrl) {
+                    formElem.append(eodBtnSubmitCtrl);
+                }
+            }
+            /*
+             <div class="flex-column">
+            <div class="wrapper">
+                <canvas id="signature-pad" width="600" height="300"></canvas>
+            </div>
+            <div class="sign-label">Sign above</div>
+            <div class="flex-row action-row">
+                <button type="button" id="btn-clear" class="button btn-clear">Clear </button>
+                <button type="button" id="btn-save" class="button btn-save">Save </button>
+            </div>
+        </div>
+             
+             */
+        }
 
         formUtilities.createFormEvents(formDef.ctrlId, constraints);
 
-        formSubmitEvent(btnEventObj);
-        /*const uploadCtrl = allCols?.find(x => x.controlType === 'UPLOAD');
-        //populateHrDepartments(departmentId);
-        // const ddlParams = { statusType: eventKey };
-        //populateHrDepartments({ appendId: departmentId, param: ddlParams });
-        driverUtil.autoDiscover(false);
-        driverUtil.openDropzone({
-            containerId: uploadCtrl?.field ?? uploadDropzoneId,
-            type: eventId,
-            btnEventObj: btnEventObj
-        });*/
+        if (!_.isEmpty(btnEventObj))
+            formSubmitEvent(btnEventObj);
     };
 
-    const getDriverData = (url) => {
+    const getDriverData = (url, reqData) => {
         jqClient.Get({
             url: url ?? commonUtil.APP_URL.LOAD_DRIVER_DATA,
-            //dataType: 'text',
+            dataType: 'text',
+            jsonData: reqData,
             onSuccess: (response) => {
                 //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
                 const { data } = response;
                 const dataSet = data ?? [];
                 const dataTable = $(`#${tblDriverId}`).DataTable();
                 dataTable.rows.add(dataSet).draw();
+
+
+                //$(`#${elemId}`).on('change', 'input.editor-active', function (event) {
+                //    console.log('input.editor-active', event);
+                //    //editor
+                //    //    .edit($(this).closest('tr'), false)
+                //    //    .set('active', $(this).prop('checked') ? 1 : 0)
+                //    //    .submit();
+                //});
+
+                //if (!isScroll) {
+                //    table.setData(data);
+                //} else {
+                //    table.addData(data);
+                //}
+            }
+        });
+    };
+
+    const getUserSignature = (id) => {
+        jqClient.Get({
+            url: commonUtil.APP_URL.GET_USER_SIGNATURE,
+            dataType: 'text',
+            jsonData: {id},
+            onSuccess: (response) => {
+                //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
+                const { data } = response;
+                driverUtil.openSignatureWindow(data);
 
 
                 //$(`#${elemId}`).on('change', 'input.editor-active', function (event) {
@@ -591,7 +846,8 @@ const driverUtil = (function (options) {
                     'className': 'btn-sm btn-change-view',
                     'attr': {
                         'title': 'Change View',
-                        'data-toggle':'tooltip'                    }
+                        'data-toggle': 'tooltip'
+                    }
                 }],
                 'select': 'single',
                 'drawCallback': function (settings) {
@@ -654,18 +910,21 @@ const driverUtil = (function (options) {
     let result = {};
 
     result.uiConrols = uiConrols;
+    result.driverSignPadId = driverSignPadId;
     result.getActionDate = getActionDate;
     result.createDriverForm = createDriverForm;
     result.createDriverTabel = createDriverTabel;
     result.getDriverData = getDriverData;
+    result.getUserSignature = getUserSignature;
     //result.addEventsToActionRow = addEventsToActionRow;
     //result.openDropzone = openDropzone;
-    result.autoDiscover = autoDiscover;
     result.getAttributes = getAttributes;
     result.settingValues = settingValues;
     result.fileID = fileID;
     result.getDriverColumnDefs = getDriverColumnDefs;
     result.getDriverDeliveryColumnDefs = getDriverDeliveryColumnDefs;
+    result.resizeCanvas = resizeCanvas;
+    result.openSignatureWindow = openSignatureWindow;
 
     return result;
 
