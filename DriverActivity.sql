@@ -16,7 +16,8 @@ CREATE TABLE [dbo].[AppUser](
 	[UpdatedDate] [datetime] NULL,
 	[UpdatedBy] [bigint] NULL,
 	FOREIGN KEY (FileID) REFERENCES AppUserImage(FileID),
-	FOREIGN KEY (VehicleID) REFERENCES VehicleType(VehicleID)
+	FOREIGN KEY (VehicleID) REFERENCES VehicleType(VehicleID),
+	CONSTRAINT UC_QID UNIQUE (QID, StaffID)
 );
 
 go
@@ -62,11 +63,54 @@ CREATE TABLE SystemSetting(
 [UpdatedBy] [bigint] NULL
 );
 
+go
+
 ALTER TABLE SystemSetting
 ADD Description nvarchar(500);
 
+go
+
+CREATE TABLE DriverEod(
+ DriverEodID bigint PRIMARY KEY IDENTITY(1,1) NOT NULL,
+ StaffId int not null,
+ UserId bigint null,
+ [FileID] nvarchar(1000) null,
+ TotalDelivery int null,
+ Delivered int null,
+ FailedDelivery int null,
+ Drops int null,
+ AdditionalDelivery int null,
+ Remarks nvarchar(1000) null,
+ [IsActive] [bit] NOT NULL DEFAULT (1),
+[IsDeleted] [bit] NOT NULL DEFAULT (0),
+[CreatedDate] [datetime] NOT NULL  DEFAULT getdate(),
+[CreatedBy] [bigint] NOT NULL,
+[UpdatedDate] [datetime] NULL,
+[UpdatedBy] [bigint] NULL,
+FOREIGN KEY (FileID) REFERENCES AppUserSignature(FileID),
+FOREIGN KEY (UserId) REFERENCES AppUser(UserId)
+);
+
+CREATE TABLE AppUserSignature (
+ [FileID] nvarchar(1000) not null PRIMARY KEY,
+ [ImgContent] varbinary(max) not null,
+ [IsActive] [bit] NOT NULL DEFAULT (1),
+[IsDeleted] [bit] NOT NULL DEFAULT (0),
+[CreatedDate] [datetime] NOT NULL  DEFAULT getdate(),
+[CreatedBy] [bigint] NOT NULL,
+[UpdatedDate] [datetime] NULL,
+[UpdatedBy] [bigint] NULL,
+);
 
 
+go
+
+ALTER TABLE [AppUser]
+ADD CONSTRAINT UC_QID UNIQUE (QID);
+
+
+
+<-- drievr delivery status sql updated--->
 
 CREATE TABLE [DriverDeliveryStatus](
 	[StaffId] [int] NOT NULL,
@@ -85,19 +129,7 @@ CREATE TABLE [DriverDeliveryStatus](
 GO
 
 
-select * from AppUser;
-select * from AppUserImage;
-
-
-select * from VehicleType;
-
-delete from AppUserImage
-truncate table AppUser
-go
-select * from DriverDeliveryStatus
 
 CREATE VIEW ViewDriverDeliveryStatus AS
 SELECT StaffId,[Name],Total,Delivered,Failed,Drops,CreatedDate,DutyStatus
 FROM DriverDeliveryStatus
-
-SELECT * FROM ViewDriverDeliveryStatus
