@@ -1706,7 +1706,7 @@ div.dataTables_scrollHead th:last-child {
     flex: 1;
     justify-content: center;
     margin: 0 1rem;
-    min-width: 12rem
+    min-width: 10rem
 }
 
 .control-row-margin {
