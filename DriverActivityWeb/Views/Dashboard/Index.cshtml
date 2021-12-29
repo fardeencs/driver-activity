@@ -35,7 +35,7 @@
 
     const tblDriverId = 'tbl-driver';
     driverUtil.createDriverTabel(driverUtil.getDriverDeliveryColumnDefs());
-    driverUtil.getDriverData(commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA, null, response => {
+    driverUtil.getDriverData({url: commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA}, response => {
         //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
         const { data } = response;
         const dataSet = data ?? [];
