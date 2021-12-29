@@ -13,25 +13,19 @@ namespace DriverActivityWeb.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly IAppUserFileService _appUserFileService;
-        private readonly IAppUserService appUserService;
         private readonly IDriverCommonService driverCommonService;
-        private readonly IApplicationService applicationService;
         private readonly IDriverEODService driverEODService;
 
         public DriverEodController(ILogger<HomeController> logger,
             ApplicationDbContext dbContext,
-            IAppUserFileService appUserImageService,
-            IAppUserService appUserService,
+            IAppUserFileService appUserFileService,
             IDriverCommonService driverCommonService,
-            IApplicationService applicationService,
             IDriverEODService driverEODService)
         {
             _logger = logger;
             this._dbContext = dbContext;
-            this._appUserFileService = appUserImageService;
-            this.appUserService = appUserService;
+            this._appUserFileService = appUserFileService;
             this.driverCommonService = driverCommonService;
-            this.applicationService = applicationService;
             this.driverEODService = driverEODService;
         }
 
@@ -44,9 +38,8 @@ namespace DriverActivityWeb.Controllers
 
         public async Task<JsonResult> SearchDriverData(SearchEntity message)
         {
-            var response = await this.appUserService.GetData(message);
-            //var test = await this.driverCommonService.GetDriverDeliveryStatus(message);
-            return Json(new ResponseEntity(response));
+            var response = await this.driverCommonService.GetDriverDeliveryStatus(message);
+            return Json(new ResponseEntity(response?.FirstOrDefault()));
         }
 
         public IActionResult ApproveEOD()

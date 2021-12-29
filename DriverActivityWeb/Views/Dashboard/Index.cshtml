@@ -33,8 +33,15 @@
 
 <script type="text/javascript">
 
+    const tblDriverId = 'tbl-driver';
     driverUtil.createDriverTabel(driverUtil.getDriverDeliveryColumnDefs());
-    driverUtil.getDriverData(commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA);
+    driverUtil.getDriverData(commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA, null, response => {
+        //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
+        const { data } = response;
+        const dataSet = data ?? [];
+        const dataTable = $(`#${tblDriverId}`).DataTable();
+        dataTable.rows.add(dataSet).draw();
+    });
 
 </script>
 }

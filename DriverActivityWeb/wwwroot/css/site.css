@@ -1,5 +1,26 @@
 :root {
     --main-app-color: #002e6c;
+    --second-color: #002F5D;
+    --third-color: #278608;
+    --four-color: #F20C1D;
+    --five-color: #ee9d00fc;
+    --six-color: #7b93b2;
+}
+
+.second-color {
+   color: var(--second-color);
+}
+.third-color {
+    color: var(--third-color);
+}
+.four-color {
+    color: var(--four-color);
+}
+.five-color {
+    color: var(--five-color);
+}
+.six-color {
+    color: var(--six-color);
 }
 
 html {
@@ -94,6 +115,8 @@ canvas#driverSignPad {
 .div-driverSignSection {
     border: 2px dashed #ced4da;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
 }
 
 .cell-driverSignSection {
@@ -103,8 +126,8 @@ canvas#driverSignPad {
     align-items: center;
 }
 
-#driver-eod-section .cell-totalDelivery, #driver-eod-section .cell-delivered,
-#driver-eod-section .cell-failedDelivery, #driver-eod-section .cell-drops {
+#driver-eod-section .cell-total, #driver-eod-section .cell-delivered,
+#driver-eod-section .cell-failed, #driver-eod-section .cell-drops {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -120,26 +143,59 @@ canvas#driverSignPad {
     align-items: center;
 }
 
-.edo-profile-section{
+.edo-profile-section {
     display: flex;
     flex-direction: row;
     order: 1;
     justify-content: flex-start;
     align-items: center;
+    flex-wrap: wrap;
+    flex: 1;
 }
 
 .edo-profile-section .q-column{
     margin:1rem;
 }
 
-.cell-BTN_SAVE_EVENT_DRIVER_EOD{
-    display:flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-}
+    .edo-profile-section .eod-profile-details > div{
+        display: flex;
+        flex-direction: row;
+        /*flex-wrap: wrap;*/
+    }
+
+    .cell-BTN_SAVE_EVENT_DRIVER_EOD {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+    }
 
 .btn-primary {
     background-color: var(--main-app-color);
 }
+
+#MAIN_FORM_EVENT_DRIVER_EOD .cell-total div {
+    color: var(--second-color);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+#MAIN_FORM_EVENT_DRIVER_EOD .cell-delivered div {
+    color: var(--third-color);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+#MAIN_FORM_EVENT_DRIVER_EOD .cell-failed div {
+    color: var(--four-color);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+
+#MAIN_FORM_EVENT_DRIVER_EOD .cell-drops div {
+    color: var(--five-color);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+

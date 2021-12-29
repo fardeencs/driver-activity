@@ -166,6 +166,17 @@
         OTHER: `<i class="bi bi-file"></i>`.trim()
     };
 
+
+    /**
+     * 
+     *  L	09/04/1986	Date (in local format)
+        LL	September 4 1986	Month name, day of month, year
+        LLL	September 4 1986 8:30 PM	Month name, day of month, year, time
+        LLLL	Thursday, September 4 1986 8:30 PM	Day of week, month name, day of month, year, time
+        LT	8:30 PM	Time (without seconds)
+        LTS	8:30:00 PM	Time (with seconds)
+     * 
+     * */
     const DATE_FORMAT = {
         SLASH_M_D_Y: "MM/DD/YYYY",
         DASH_YYYY_MM_DD: "YYYY-MM-DD",
@@ -206,21 +217,23 @@
         return localTimeTz;
     };
 
-    const getLocalUtcDateStringEn = (utcDateString, format) => {
+    const getLocalUtcDateStringEn = (utcDateString, outputFormat, inputFormat) => {
         if (!utcDateString) return '';
         moment.locale("en");
-        format = format ?? 'MM/DD/YYYY hh:mm:ss A';
-        var utcMoment = moment.utc(new Date(utcDateString), 'MM/DD/YYYY hh:mm:ss A');
-        var localTimeTz = moment.utc(utcMoment).tz("Asia/Riyadh").format(format);
+        outputFormat = outputFormat ?? 'MM/DD/YYYY hh:mm:ss A';
+        inputFormat = inputFormat ?? 'MM/DD/YYYY hh:mm:ss A';
+        var utcMoment = moment.utc(new Date(utcDateString), inputFormat);
+        var localTimeTz = moment.utc(utcMoment).tz("Asia/Riyadh").format(outputFormat);
         return localTimeTz;
     };
 
-    const getLocalUtcDateStringAr = (utcDateString, format) => {
+    const getLocalUtcDateStringAr = (utcDateString, outputFormat, inputFormat) => {
         if (!utcDateString) return '';
         moment.locale("ar");
-        format = format ?? 'MM/DD/YYYY hh:mm:ss A';
-        var utcMoment = moment.utc(new Date(utcDateString), 'MM/DD/YYYY hh:mm:ss A');
-        var localTimeTz = moment.utc(utcMoment).tz("Asia/Riyadh").format(format);
+        outputFormat = outputFormat ?? 'MM/DD/YYYY hh:mm:ss A';
+        inputFormat = inputFormat ?? 'MM/DD/YYYY hh:mm:ss A';
+        var utcMoment = moment.utc(new Date(utcDateString), inputFormat);
+        var localTimeTz = moment.utc(utcMoment).tz("Asia/Riyadh").format(outputFormat);
         return localTimeTz;
     };
 

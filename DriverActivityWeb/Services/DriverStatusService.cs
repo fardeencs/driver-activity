@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DriverActivityWeb.Contracts;
 using DriverActivityWeb.Data;
+using DriverActivityWeb.Helper;
 using DriverActivityWeb.Models.DriverStatus;
 using DriverActivityWeb.ViewModels;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,17 @@ namespace DriverActivityWeb.Services
             var query = from s in this._driverDbContext.ViewDriverDeliveryStatus
                         select s;
 
+            #region search
+            if(message.StaffId > 0)
+              query = query.Where(x => x.StaffId == message.StaffId);
+            if (AppUtility.IsNotEmpty(message.Name))
+                query = query.Where(x => x.Name.Contains(message.Name));
+
+            #endregion
+
             var seletQuery = query.Select(s => new ViewDriverDeliveryStatusVM { 
               StaffId = Convert.ToString(s.StaffId),
-              CreatedDate = s.CreatedDate,
+              ViewCreatedDate = s.CreatedDate,
               Delivered = s.Delivered,
               Drops = s.Drops,
               DutyStatus = s.DutyStatus,

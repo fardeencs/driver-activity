@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Driver EOD";
+    ViewData["Title"] = "Approve Driver EOD";
 }
 
 
@@ -12,10 +12,12 @@
 
 <div class="text-center">
 
+    <section>
+        <div id="seach-container"></div>
+    </section>
+
     <section id="driver-eod-section">
-        <div class="container">
-            <div id="driver-container"></div>
-        </div>
+         <div id="driver-container"></div>
     </section>
     
 </div>
@@ -24,39 +26,81 @@
 
 
 @section Scripts{
+<script src="~/js/utilities/jq-search-util.js"></script>
 <script src="~/js/app-utilies/driver-utility.js"></script>
+<script src="~/lib/signature-pad/signature-pad.min.js"></script>
 
 <script type="text/javascript">
 
-    //table = tableUtil.createTabulator({
-    //            id: viewContainerId,
-    //            uniqueRowId: 'controlValidationId',
-    //            //sortColumn: "titel",
-    //            sortDir: "asc",
-    //            paginationConfig,
-    //            columns: getColumnsDef(),
-    //            isResponsiveLayout: false,
-    //            config: {
-    //                textDirection: textDir,
-    //                paginationSize: 20,
-    //                pagination: "local",
-    //                placeholder: msgNoDataFound,
-    //                layout: "fitDataStretch",
-    //                headerFilterPlaceholder: "FilterColumn",
-    //                validationMode: "highlight",
-    //                validationFailed: function (cell, value, validators) {
-    //                    //cell - cell component for the edited cell
-    //                    //value - the value that failed validation
-    //                    //validatiors - an array of validator objects that failed
-    //                    console.log('validationFailed',cell, value, validators);
-    //                },
-    //            }
-        
+    const seachContainerId ='seach-container',
+    eventKey = 'SEARCH_DRIVER_EOD',
+    btnSearchId = 'btnSearch'
+    ;
 
-    //driverUtil.createDriverForm({eventId: `EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`});
-    //window.onresize = driverUtil.resizeCanvas(driverUtil.driverSignPadId);
+    const searchColDef = () => {
+        const viewColDef = [
+            {
+                controlName: 'name',
+                field: 'name',
+                header: 'Name',
+                controlType: 'TEXT_BOX',
+                type: 'TEXT_BOX',
+                rowOrder: 1,
+                columnOrder: 1,
+            },
+            {
+                controlName: 'staffID',
+                field: 'staffID',
+                header: 'Staff ID',
+                controlType: 'NUMBER_BOX',
+                type: 'NUMBER_BOX',
+                rowOrder: 1,
+                columnOrder: 2,
+            },
+            {
+                controlName: 'qid',
+                field: 'qid',
+                header: 'QID',
+                controlType: 'NUMBER_BOX',
+                type: 'NUMBER_BOX',
+                rowOrder: 1,
+                columnOrder:3,
+            },
+            //{
+            //    controlName: `BTN_${eventKey}`,
+            //    header: 'Search',
+            //    controlType: 'BUTTON',
+            //    rowOrder: 1,
+            //    columnOrder: 4,
+            //},
+        ];
+        return viewColDef;
+        //return { viewColDef, constraints:[] };
+    };
+
+
+    const btnSearchCallback=(reponse)=>{
+        const {data} = reponse ?? {};
+        driverUtil.getDriverData({url:commonUtil.APP_URL.GET_DRIVER_EOD, reqData: data, btnId:btnSearchId }, eventResult=>{
+            driverUtil.createDriverForm({eventId: `EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`, rowData: eventResult?.data});
+            window.onresize = driverUtil.resizeCanvas(driverUtil.driverSignPadId);
+        });
+    };
+
+    const btnClearCallback=()=>{};
+
+    columnSearchUtil.createColumnSearch({
+        appendId: seachContainerId, 
+        ctrlId: `panel-${seachContainerId}`,
+        colDef: searchColDef(),
+        actions: [
+            {btnId: btnSearchId, text: 'Search', eventCallback: btnSearchCallback, type: 'SEARCH'},
+            {btnId: 'btnClear', text: 'Clear', eventCallback: btnClearCallback, type: 'CLEAR'}
+        ]
+    })
+    //driverUtil.createDriverForm({eventId: `EVENT_${eventKey}`, columnsDef: searchColDef(), url: commonUtil.APP_URL.GET_DRIVER_EOD});
     //driverUtil.getUserSignature('ea341367-2e9a-405b-8060-a71cfc7572b7');
     //driverUtil.getDriverData(commonUtil.APP_URL.GET_DRIVER_DELIVERY_STATUS_DATA);
 
 </script>
-}s
+}

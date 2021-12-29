@@ -32,15 +32,20 @@
 
             #region search
 
-            if(null != message.StaffIds && message.StaffIds.Count > 0)
+            //if(null != message.StaffIds && message.StaffIds.Count > 0)
+            //{
+            //    query = query.Where(w => message.StaffIds.Contains(w.m.StaffId.Value));
+            //}
+            if(AppUtility.IsNotEmpty(message.QID))
             {
-                query = query.Where(w => message.StaffIds.Contains(w.m.StaffId.Value));
+                query = query.Where(w => w.m.QID == Convert.ToInt32(message.QID));
             }
 
             #endregion
 
             var selectQurey = query.Select(x => new AppUserVM
             {
+                UserId = x.m.UserId,
                 CreatedDate = x.m.CreatedDate,
                 Name = x.m.NameEn,
                 StaffId = Convert.ToString(x.m.StaffId),

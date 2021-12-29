@@ -106,6 +106,12 @@ const formUtilities = (function () {
                 if (ctrlType && ctrlType == 'checkbox') {
                     ctlValue[dataKey] = $(this).prop('checked');
                 }
+                else if (ctrlType && ctrlType == 'number') {
+                    const val = $(this).val();
+                    const numberVal = Number(val ?? 0);
+                    if (numberVal > 0)
+                        ctlValue[dataKey] = numberVal;
+                }
                 else if (ctrlType && ctrlType?.toLocaleLowerCase() == 'select' && $(this).attr('multiple')) {
                     const val = $(this).val();
                     if (val && val?.length > 0)
@@ -275,7 +281,8 @@ const formUtilities = (function () {
         labelWidthClazz = 'label-width';//labelWidthClazz ?? 'col-sm-3';
         ctrlWidthClazz = 'ctrl-width';//ctrlWidthClazz?? 'col-sm-9';
         let { type, field, header, collections, value, prefix, suffix, multiple, html, isLabel, clazz, placeholder,
-            controlType, isActive, rowNo, colNo, format, isEnglish, icon, width, height, isFieldset, isCellMsg, ddlLabelAttr, ddlValueAttr } = col;
+            controlType, isActive, rowNo, colNo, format, isEnglish, icon, width, height, isFieldset, isCellMsg,
+            ddlLabelAttr, ddlValueAttr, isNumnerFormat } = col;
         value = _.get(jsonData, field) ?? value;
         const cellVal = value;
         isLabel = isLabel ?? true;
@@ -550,13 +557,15 @@ const formUtilities = (function () {
                 }
                 break;
             case 'NUMBER':
-                cellCtrl.innerHTML = `${(prefix || '')} ${numberFormatter.format(cellVal || 0)} ${(suffix || '')}`;
+                cellCtrl.innerHTML = `${(prefix || '')} ${isNumnerFormat ? numberFormatter.format(cellVal ?? 0) : (cellVal ?? 0)}  ${(suffix || '')}`;
                 isCellMsg = false;
                 break;
             case 'DATE':
+                cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = `${(prefix || '')} ${dateFormatter(cellVal, dir, format, isEnglish)} ${(suffix || '')}`;
                 break;
             case 'DATE_TIME':
+                cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = `${(prefix || '')} ${dateTimeFormatter(cellVal, dir, format, isEnglish)} ${(suffix || '')}`;
                 break;
             case 'DIV':
@@ -592,11 +601,13 @@ const formUtilities = (function () {
                 break;
             case 'TEMPLATE':
                 //cellCtrl.appendChild(cellMsg);
+                cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = html;
                 isCellMsg = false;
                 cellCtrlClazz = ['form-cell-template'];
                 break;
             default:
+                cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = `${(prefix || '')} ${(cellVal || '')} ${(suffix || '')}`;
                 if (value) {
                     cellDir = commonUtil.isRTL(value) ? 'RTL' : 'LTR';
@@ -632,6 +643,9 @@ const formUtilities = (function () {
             appRowClazz = 'q-column';
             colId = `${formId}_ROW`;
             controlsRowClazz = ['control-row-view', 'row-align-wrap'];
+        }
+        else {
+            appRowClazz = 'row-align-wrap-col-gap';
         }
 
         const appRow = document.createElement('div');

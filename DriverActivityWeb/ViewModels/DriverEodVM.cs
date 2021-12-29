@@ -4,6 +4,8 @@
     {
         public long? DriverEodID { get; set; }
         public string? FileID { get; set; }
+        public int? StaffId { get; set; }
+        public long? UserId { get; set; }
         public int? TotalDelivery { get; set; }
         public int? Delivered { get; set; }
         public int? FailedDelivery { get; set; }

@@ -19,10 +19,6 @@
       "destination": "wwwroot/lib/sweetalert2/"
     },
     {
-      "library": "moment-timezone@0.5.34",
-      "destination": "wwwroot/lib/moment-timezone/"
-    },
-    {
       "library": "toastr@2.1.4",
       "destination": "wwwroot/lib/toastr/"
     },

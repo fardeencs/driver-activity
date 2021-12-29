@@ -8,7 +8,7 @@
         public int? Delivered { get; set; }
         public int? Failed { get; set; }
         public int? Drops { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        public DateTime? ViewCreatedDate { get; set; }
         public string? DutyStatus { get; set; }
         public string? ProfilePicture { get; set; }
     }

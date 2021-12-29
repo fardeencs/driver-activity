@@ -15,7 +15,8 @@
         driverContainerId = 'driver-container',
         tblDriverId = 'tbl-driver',
         NO_DATA = '...',
-        driverSignPadId = 'driverSignPad'
+        driverSignPadId = 'driverSignPad',
+        btnClearSignId = 'btnClearSign'
         ;
 
     let uiConrols = {
@@ -44,10 +45,11 @@
         };
     };
 
-    const getActionDate = (val, format, dir) => {
+    const getActionDate = (val, outputFormat, inputFormat, dir) => {
+        if (!val) return NO_DATA;
         const { txtDir } = driverUtil.uiConrols;
-        format = format ?? commonUtil.DATE_FORMAT.lll;
-        return commonUtil.getLocalUtcDateStringEn(val, format);;
+        outputFormat = outputFormat ?? commonUtil.DATE_FORMAT.lll;
+        return commonUtil.getLocalUtcDateStringEn(val, outputFormat, inputFormat);
         //if (dir) {
         //    return dir === 'RTL' ? commonUtil.getLocalUtcDateStringAr(val, format) : commonUtil.getLocalUtcDateStringEn(val, format);
         //}
@@ -121,7 +123,7 @@
     const getDriverEODColDef = () => {
         const viewColDef = [
             {
-                controlName: 'totalDelivery',
+                controlName: 'total',
                 header: 'Total Delivery',
                 //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
                 controlType: 'NUMBER',
@@ -137,7 +139,7 @@
                 columnOrder: 1,
             },
             {
-                controlName: 'failedDelivery',
+                controlName: 'failed',
                 header: 'Failed Delivery',
                 //uibackendName: 'AGENDA_ASSIGN_COMPLAINT_REMARKS',
                 controlType: 'NUMBER',
@@ -549,7 +551,7 @@
         document.getElementById(btnId).addEventListener(eventName, ev => {
             const btnEventObjItem = ev.currentTarget?.myParam;
             if (btnEventObjItem) {
-                const { liId, formConstraints, colDef, extraValidationCntrolsName } = btnEventObjItem;
+                const { liId, formConstraints, colDef, extraValidationCntrolsName, data } = btnEventObjItem;
                 const eventKey = liId.replace('EVENT_', '');
                 const formId = `FORM_${liId}`;
                 const formValues = formUtilities.getFormControlValue(formId);
@@ -577,7 +579,13 @@
                 else if (commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD == eventKey) {
                     reqData = {
                         ...reqData,
-                        signature: signaturePad.toDataURL('image/png')
+                        signature: signaturePad.toDataURL('image/png'),
+                        delivered: data?.delivered,
+                        drops: data?.drops,
+                        failed: data?.failed,
+                        total: data?.total,
+                        staffId: data?.staffId,
+                        userId: data?.userId,
                     };
                 }
 
@@ -587,8 +595,7 @@
         }, false);
     };
 
-    const createDriverForm = ({ eventId, title, rowData, extraValidationCntrolsName, vehicleList }) => {
-        let columnsDef = null, url = null;
+    const createDriverForm = ({ eventId, title, rowData, extraValidationCntrolsName, vehicleList, columnsDef, url }) => {
             extraValidationCntrolsName = extraValidationCntrolsName ?? [],
             rowData = rowData ?? {}
             ;
@@ -597,6 +604,12 @@
             case commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD:
                 columnsDef = getDriverEODColDef();
                 url = commonUtil.APP_URL.SAVE_DRIVER_EOD_FORM;
+                const numberBoxs = columnsDef?.viewColDef?.find(x => x.controlType === 'NUMBER_BOX');
+                if (numberBoxs && numberBoxs?.length > 0) {
+                    numberBoxs.forEach(x => {
+                        x.isNumnerFormat = true;
+                    });
+                }
                 let profilePictureSectionCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'profilePictureSection');
                 let driverSignSectionCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'driverSignSection');
                 let eodRemarksCtrl = columnsDef?.viewColDef?.find(x => x.controlName === 'remarks');
@@ -677,16 +690,26 @@
                 canvas.setAttribute("height", '300');
 
                 const driverSignSectionElem = document.getElementById(driverSignCtrl.controlName);
+                const btnClearSign = document.createElement('button');
+                btnClearSign.innerText = "Clear Sign";
+                btnClearSign.id = btnClearSignId;
+                btnClearSign.classList.add('btn', 'btn-secondary');
                 driverSignSectionElem.append(canvas);
+                driverSignSectionElem.append(btnClearSign);
                 signaturePad = new SignaturePad(canvas, {
                     backgroundColor: 'rgb(250,250,250)'
+                });
+
+                btnClearSign.addEventListener('click', clearSignEvet => {
+                    clearSignEvet.preventDefault();
+                    signaturePad.clear();
                 });
             }
 
             if (profilePictureSectionCtrl) {
                 const profilePictureSectionElm = document.getElementById(profilePictureSectionCtrl.controlName);
                 if (profilePictureSectionElm) {
-                    const { profilePicture, staffId, createdDate, name } = rowData ?? {};
+                    const { profilePicture, staffId, viewCreatedDate, name } = rowData ?? {};
                     profilePictureSectionElm.innerHTML = "";
                     profilePictureSectionElm.classList.add('edo-profile-section');
                     const profileTemplate = ` <div class="q-column">
@@ -694,10 +717,10 @@
                                                     <img src="${profilePicture ?? '../images/avatar.png'}" />
                                                   </div>                                                                
                                               </div>
-                                              <div class="q-column">
-                                                <div>Name: ${name ?? NO_DATA} </div>
-                                                <div>Staff ID: ${staffId ?? NO_DATA}</div>
-                                                <div>Created Date: ${createdDate ?? NO_DATA} </div>
+                                              <div class="q-column eod-profile-details">
+                                                <div>${name ?? NO_DATA} </div>
+                                                <div>${staffId ?? NO_DATA}</div>
+                                                <div>${driverUtil.getActionDate(new Date(viewCreatedDate), commonUtil.DATE_FORMAT.ll) ?? NO_DATA} </div>
                                               </div>`;
                     profilePictureSectionElm.innerHTML = profileTemplate;
                 }
@@ -749,32 +772,15 @@
             formSubmitEvent(btnEventObj);
     };
 
-    const getDriverData = (url, reqData) => {
+    const getDriverData = ({ url, reqData, btnId }, callback) => {
         jqClient.Get({
             url: url ?? commonUtil.APP_URL.LOAD_DRIVER_DATA,
             dataType: 'text',
+            btnLoaderId: btnId,
             jsonData: reqData,
             onSuccess: (response) => {
-                //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
-                const { data } = response;
-                const dataSet = data ?? [];
-                const dataTable = $(`#${tblDriverId}`).DataTable();
-                dataTable.rows.add(dataSet).draw();
-
-
-                //$(`#${elemId}`).on('change', 'input.editor-active', function (event) {
-                //    console.log('input.editor-active', event);
-                //    //editor
-                //    //    .edit($(this).closest('tr'), false)
-                //    //    .set('active', $(this).prop('checked') ? 1 : 0)
-                //    //    .submit();
-                //});
-
-                //if (!isScroll) {
-                //    table.setData(data);
-                //} else {
-                //    table.addData(data);
-                //}
+                if (callback)
+                   return callback(response);
             }
         });
     };
@@ -785,24 +791,8 @@
             dataType: 'text',
             jsonData: {id},
             onSuccess: (response) => {
-                //const { txtDir, lblNoDataFound } = complaintUtil.uiConrols;
                 const { data } = response;
                 driverUtil.openSignatureWindow(data);
-
-
-                //$(`#${elemId}`).on('change', 'input.editor-active', function (event) {
-                //    console.log('input.editor-active', event);
-                //    //editor
-                //    //    .edit($(this).closest('tr'), false)
-                //    //    .set('active', $(this).prop('checked') ? 1 : 0)
-                //    //    .submit();
-                //});
-
-                //if (!isScroll) {
-                //    table.setData(data);
-                //} else {
-                //    table.addData(data);
-                //}
             }
         });
     };

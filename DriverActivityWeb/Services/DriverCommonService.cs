@@ -33,38 +33,57 @@ namespace DriverActivityWeb.Services
 
         public async Task<PaginatedList<ViewDriverDeliveryStatusVM>> GetDriverDeliveryStatus(SearchEntity message)
         {
-            var deliverStatus = await this.driverStatusService.GetDriverDeliveryStatus(message);
-
-            if (null != deliverStatus && deliverStatus.Count > 0)
+            if(message.IsSearch.HasValue && message.IsSearch.Value && AppUtility.IsNotEmpty(message.QID))
             {
-                var staffIds = deliverStatus.Where(w => AppUtility.IsNotEmpty(w.StaffId) && Convert.ToInt32(w.StaffId) > 0)
-                                    .Select(x => Convert.ToInt32(x.StaffId)).ToList();
-                var driverOtherData = await this.appUserService.GetData(new SearchEntity { StaffIds = staffIds });
-                foreach (var item in driverOtherData)
+                var driverOtherData = await this.appUserService.GetData(new SearchEntity { QID = message.QID });
+                if(driverOtherData != null && driverOtherData.Count > 0)
                 {
-                    var exsitItem = deliverStatus.Where(x => AppUtility.IsNotEmpty(x.StaffId) 
-                                && Convert.ToInt32(x.StaffId) == Convert.ToInt32(item.StaffId))
-                                .FirstOrDefault();
-                    if(null != exsitItem)
+                    message.StaffId = Convert.ToInt32(driverOtherData.FirstOrDefault().StaffId);
+                    var deliverStatus = await this.driverStatusService.GetDriverDeliveryStatus(message);
+                    UpdateDriverStatusData(deliverStatus, driverOtherData);
+                    return deliverStatus;
+                }
+                return null;
+            }
+            else
+            {
+                var deliverStatus = await this.driverStatusService.GetDriverDeliveryStatus(message);
+                if (null != deliverStatus && deliverStatus.Count > 0)
+                {
+                    var staffIds = deliverStatus.Where(w => AppUtility.IsNotEmpty(w.StaffId) && Convert.ToInt32(w.StaffId) > 0)
+                                        .Select(x => Convert.ToInt32(x.StaffId)).ToList();
+                    var driverOtherData = await this.appUserService.GetData(new SearchEntity { StaffIds = staffIds });
+                    UpdateDriverStatusData(deliverStatus, driverOtherData);
+                }
+                return deliverStatus;
+            }
+        }
+
+        private static void UpdateDriverStatusData(PaginatedList<ViewDriverDeliveryStatusVM> deliverStatus, List<AppUserVM> driverOtherData)
+        {
+            foreach (var item in driverOtherData)
+            {
+                var exsitItem = deliverStatus.Where(x => AppUtility.IsNotEmpty(x.StaffId)
+                            && Convert.ToInt32(x.StaffId) == Convert.ToInt32(item.StaffId))
+                            .FirstOrDefault();
+                if (null != exsitItem)
+                {
+                    exsitItem.UserId = item.UserId;
+                    exsitItem.CreatedDate = item.CreatedDate;
+                    //exsitItem.ViewCreatedDate = item.ViewCreatedDate;
+                    exsitItem.StaffId = item.StaffId;
+                    exsitItem.QID = item.QID;
+                    exsitItem.VehicleID = item.VehicleID;
+                    exsitItem.VehicleName = item.VehicleName;
+                    exsitItem.UserId = item.UserId;
+                    byte[] imgContent = item.ImgContent;
+                    if (imgContent != null && imgContent.Count() > 0)
                     {
-                        exsitItem.UserId = item.UserId;
-                        exsitItem.CreatedDate = item.CreatedDate;
-                        exsitItem.StaffId = item.StaffId;
-                        exsitItem.QID = item.QID;
-                        exsitItem.VehicleID = item.VehicleID;
-                        exsitItem.VehicleName = item.VehicleName;
-                        byte[] imgContent = item.ImgContent;
-                        if(imgContent != null && imgContent.Count() > 0)
-                        {
-                            string base64String = Convert.ToBase64String(imgContent, 0, imgContent.Length);
-                            exsitItem.ProfilePicture = "data:image/png;base64," + base64String;
-                        }
+                        string base64String = Convert.ToBase64String(imgContent, 0, imgContent.Length);
+                        exsitItem.ProfilePicture = "data:image/png;base64," + base64String;
                     }
                 }
             }
-            return deliverStatus;
-
         }
-
     }
 }
