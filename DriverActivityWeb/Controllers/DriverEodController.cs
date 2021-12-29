@@ -42,11 +42,6 @@ namespace DriverActivityWeb.Controllers
             return Json(new ResponseEntity(response?.FirstOrDefault()));
         }
 
-        public IActionResult ApproveEOD()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> SaveProfileImage(long? userId)
         {
