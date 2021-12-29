@@ -509,31 +509,17 @@
             onSuccess: (response) => {
                 try {
                     const { data } = response;
+                    const formId = `FORM_${liId}`;
+                    const formElem = formUtilities.getFormElem(formId);
+                    if (formElem)
+                        formElem.reset();
+
                     if (commonUtil.STATUS_MASTER_TYPE.SUBMIT == eventKey) {
-                        /*selectedOfficers = [];
-                        const { nextActions, lastStatus } = response?.data ?? {};
-                        if (nextActions && lastStatus) {
-                            let updatedRow = complaintUtil.selectedRowData;
-                            updatedRow = {
-                                ...updatedRow,
-                                actionlist: nextActions,
-                                status: uiConrols.txtDir == 'RTL' ? lastStatus?.statusMaster?.nameAr : lastStatus?.statusMaster?.nameEn
-                            };
-                            UpdateRowToGrid(false, updatedRow);
-                        }*/
                     }
-                    else if (commonUtil.STATUS_MASTER_TYPE.CREATE_AGENDA == eventKey) {
-                        /*const evElem = document.getElementById(btnId);
-                        const event = new CustomEvent(`CLICK_${eventKey}`, { detail: { type: `type__${eventKey}`, data: { formData: data } } });
-                        evElem.dispatchEvent(event);*/
+                    else if (commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD == eventKey) {
+                        signaturePad.clear();
                     }
-
-
                     if (data) {
-                        /*const { dailogId } = complaintUtil.getAttributes();
-                        const $dailog = $(`#${dailogId}`);
-                        $dailog.empty();
-                        $dailog.dialog('close');*/
                     }
                 } catch (e) { }
                 finally {
@@ -582,8 +568,8 @@
                         signature: signaturePad.toDataURL('image/png'),
                         delivered: data?.delivered,
                         drops: data?.drops,
-                        failed: data?.failed,
-                        total: data?.total,
+                        failedDelivery: data?.failed,
+                        totalDelivery: data?.total,
                         staffId: data?.staffId,
                         userId: data?.userId,
                     };
