@@ -70,6 +70,8 @@ ADD Description nvarchar(500);
 
 go
 
+--use DriverActivity
+
 CREATE TABLE DriverEod(
  DriverEodID bigint PRIMARY KEY IDENTITY(1,1) NOT NULL,
  StaffId int not null,
@@ -80,6 +82,7 @@ CREATE TABLE DriverEod(
  FailedDelivery int null,
  Drops int null,
  AdditionalDelivery int null,
+ Earned int null,
  Remarks nvarchar(1000) null,
  [IsActive] [bit] NOT NULL DEFAULT (1),
 [IsDeleted] [bit] NOT NULL DEFAULT (0),
@@ -108,6 +111,27 @@ go
 ALTER TABLE [AppUser]
 ADD CONSTRAINT UC_QID UNIQUE (QID);
 
+go
+
+
+CREATE TABLE RouteConfig(
+ RouteConfigID bigint PRIMARY KEY IDENTITY(1,1) NOT NULL,
+ RouteCode nvarchar(10) not null,
+ RouteName nvarchar(1000) null,
+ DeliveryCountSLA int null,
+ ExtraDeliveryCharge decimal(18,2) null,
+ [Description] nvarchar(1000) null,
+ [IsActive] [bit] NOT NULL DEFAULT (1),
+[IsDeleted] [bit] NOT NULL DEFAULT (0),
+[CreatedDate] [datetime] NOT NULL  DEFAULT getdate(),
+[CreatedBy] [bigint] NOT NULL,
+[UpdatedDate] [datetime] NULL,
+[UpdatedBy] [bigint] NULL
+);
+
+
+
+--select * from AppUser;
 
 
 <-- drievr delivery status sql updated--->
@@ -131,5 +155,5 @@ GO
 
 
 CREATE VIEW ViewDriverDeliveryStatus AS
-SELECT StaffId,[Name],Total,Delivered,Failed,Drops,CreatedDate,DutyStatus
+SELECT StaffId,[Name],Total,Delivered,Failed,Drops,CreatedDate,DutyStatus, [Route]
 FROM DriverDeliveryStatus
