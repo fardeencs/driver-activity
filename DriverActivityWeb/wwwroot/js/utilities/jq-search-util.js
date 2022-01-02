@@ -43,7 +43,7 @@ const columnSearchUtil = (function () {
     };
 
     const createControl = (col, rowId, placeholderCtrl) => {
-        const { type, field, header, collections, value, prefix, suffix, multiple } = col;
+        const { type, field, header, collections, value, prefix, suffix, multiple, ddlLabelAttr, ddlValueAttr } = col;
         const cell = document.createElement('div');
         const cellId = rowId + '-cell-' + field;
         cell.id = cellId;
