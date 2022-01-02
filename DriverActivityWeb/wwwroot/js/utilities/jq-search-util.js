@@ -143,8 +143,8 @@ const columnSearchUtil = (function () {
                 select.appendChild(placeholderOption);
                 collections.forEach((item, i) => {
                     const option = document.createElement('option');
-                    option.text = item.label;
-                    option.value = item.value;
+                    option.text = item.label ?? item[ddlLabelAttr];
+                    option.value = item.value ?? item[ddlValueAttr];
                     select.appendChild(option);
                 });
                 cell.appendChild(select);

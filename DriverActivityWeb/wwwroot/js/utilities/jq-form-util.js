@@ -487,7 +487,7 @@ const formUtilities = (function () {
                 ddlCollections.forEach((item, i) => {
                     const option = document.createElement('option');
                     option.text = item.label ?? item[ddlLabelAttr];
-                    option.value = item.value ?? item[ddlValueAttr];;
+                    option.value = item.value ?? item[ddlValueAttr];
                     select.appendChild(option);
                 });
                 //select.value = cellVal;
