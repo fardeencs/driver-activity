@@ -20,6 +20,32 @@
             this._dbContext = dbContext;
         }
 
+        public User? GetUser(string userName, string password)
+        {
+           var user = this._dbContext.AppUser.Where(x => x.UserName == userName && x.Password == password)
+                .Where(x => x.IsActive == true && x.IsDeleted == false)
+                .Select(x => new User
+                {
+                    Username = x.UserName,
+                    Password = x.Password,
+                    Id = x.UserId,
+                    Name= x.NameEn
+                }).SingleOrDefault();
+            return user; 
+        }
+
+        public User? GetUser(long userId)
+        {
+            var user = this._dbContext.AppUser.Where(x => x.UserId == userId)
+                 .Select(x => new User
+                 {
+                     Username = x.UserName,
+                     Name = x.NameEn,
+                     Id =  x.UserId
+                 }).SingleOrDefault();
+            return user;
+        }
+
         public async Task<List<AppUserVM>> GetData(SearchEntity message)
         {
             var query = from m in _dbContext.AppUser
@@ -75,7 +101,7 @@
                     throw new CustomException("Data not found");
 
                 updateObj.NameEn = message.NameEn;
-                updateObj.NameAr = message.NameAr;
+                //updateObj.NameAr = message.NameAr;
                 updateObj.StaffId = Convert.ToInt32(message.StaffId);
                 updateObj.QID = Convert.ToInt32(message.QID);
                 //updateObj.VehicleID = Convert.ToInt32(message.VehicleID);

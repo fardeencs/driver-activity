@@ -705,6 +705,9 @@ const tableUtil = (function () {
                     if (tdElem.hasClass('flex-row-two')) {
                         tdElem.removeClass('flex-row-two');
                     }
+                    if (tdElem.hasClass('flex-row-one')) {
+                        tdElem.removeClass('flex-row-two');
+                    }
                     if (tdElem.hasClass('flex-column-one')) {
                         tdElem.removeClass('flex-column-one');
                     }

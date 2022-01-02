@@ -39,6 +39,7 @@ namespace DriverActivityWeb.Services
               Failed = s.Failed,
               Name = s.Name,
               Total = s.Total,
+              Route = s.Route
             });
             message.PageSize = message.PageSize ?? 10;
             var result = await PaginatedList<ViewDriverDeliveryStatusVM>.CreateAsync(seletQuery.AsNoTracking(), message.PageNumber ?? 1, message.PageSize.Value);

@@ -39,7 +39,12 @@ namespace DriverActivityWeb.Controllers
         public async Task<JsonResult> SearchDriverData(SearchEntity message)
         {
             var response = await this.driverCommonService.GetDriverDeliveryStatus(message);
-            return Json(new ResponseEntity(response?.FirstOrDefault()));
+            var result = response?.FirstOrDefault();
+            if(result != null)
+            {
+                result.ExtraDeliveryCharge = await this.driverCommonService.GetRouteDeliveryCharges(result.Route);
+            }
+            return Json(new ResponseEntity(result));
         }
 
         [HttpPost]

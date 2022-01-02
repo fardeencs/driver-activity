@@ -17,6 +17,7 @@ namespace DriverActivityWeb.Data
         public DbSet<SystemSetting> SystemSetting { get; set; }
         public DbSet<DriverEod> DriverEod { get; set; }
         public DbSet<AppUserSignature> AppUserSignature { get; set; }
+        public DbSet<RouteConfig> RouteConfig { get; set; }
 
     }
 

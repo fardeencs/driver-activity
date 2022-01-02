@@ -15,6 +15,7 @@
         public int? FailedDelivery { get; set; }
         public int? Drops { get; set; }
         public int? AdditionalDelivery { get; set; }
+        public int? Earned { get; set; }
         public string? Remarks { get; set; }
         [ForeignKey("AppUserSignature")]
         public string? FileID { get; set; }

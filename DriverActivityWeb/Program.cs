@@ -1,5 +1,6 @@
 using DriverActivityWeb.Data;
 using DriverActivityWeb.Helper;
+using DriverActivityWeb.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 
 
-builder.Services.AddDbContextPool<ApplicationDbContext>(options => 
+builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDbContextPool<DriverDbContext>(options =>
@@ -35,6 +36,26 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// custom jwt auth middleware
+app.UseMiddleware<JwtMiddleware>();
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(
+//      name: "default",
+//      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+//    );
+
+//    //endpoints.MapAreaControllerRoute(
+//    //  name: "default",
+//    //  pattern: "{controller=Home}/{action=Index}/{id?}"
+//    //);
+//});
+
+app.MapControllerRoute(
+     name: "default",
+     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

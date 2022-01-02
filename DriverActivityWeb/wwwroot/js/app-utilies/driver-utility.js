@@ -163,6 +163,14 @@
             //    columnOrder: 1,
             //},
             {
+                controlName: 'earned',
+                header: 'Earned for that Day',
+                //uibackendName: 'AGENDA_COMPLAINT',
+                controlType: 'NUMBER',
+                //rowOrder: 3,
+                columnOrder: 1,
+            },
+            {
                 controlName: 'additionalDelivery',
                 header: 'Additional Delivery',
                 //uibackendName: 'AGENDA_COMPLAINT',
@@ -563,6 +571,11 @@
                     };
                 }
                 else if (commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD == eventKey) {
+                    const additionalDeliveryElem = document.getElementById('additionalDelivery');
+                    let earnedValue = 0;
+                    if (additionalDeliveryElem && additionalDeliveryElem.value)
+                        earnedValue = additionalDeliveryElem.value * (data?.extraDeliveryCharge ?? 0);
+
                     reqData = {
                         ...reqData,
                         signature: signaturePad.toDataURL('image/png'),
@@ -572,6 +585,7 @@
                         totalDelivery: data?.total,
                         staffId: data?.staffId,
                         userId: data?.userId,
+                        earned: earnedValue
                     };
                 }
 
@@ -668,6 +682,7 @@
         if (eventKey === commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD) {
             const driverSignCtrl = allCols?.find(x => x.controlName === 'driverSignSection');
             const profilePictureSectionCtrl = allCols?.find(x => x.controlName === 'profilePictureSection');
+            const additionalDeliveryCtrl = allCols?.find(x => x.controlName === 'additionalDelivery');
             if (driverSignCtrl) {
                 const canvas = document.createElement('canvas');
                 canvas.id = driverUtil.driverSignPadId;
@@ -710,6 +725,29 @@
                                               </div>`;
                     profilePictureSectionElm.innerHTML = profileTemplate;
                 }
+            }
+
+            if (additionalDeliveryCtrl) {
+                const additionalDeliveryElem = document.getElementById(additionalDeliveryCtrl.controlName);
+                additionalDeliveryElem.myParam = rowData;
+                document.getElementById(additionalDeliveryCtrl.controlName).addEventListener('keyup', earnedEvt => {
+                    if (!earnedEvt.target?.value || earnedEvt.target?.value.trim().length == 0)
+                        return;
+
+                    const { extraDeliveryCharge } = earnedEvt.currentTarget?.myParam ?? {};
+                    const earnedCtrl = allCols?.find(x => x.controlName === 'earned');
+                    if (earnedCtrl) {
+                        const earnedElem = document.getElementById(earnedCtrl.controlName);
+                        if (earnedElem) {
+                            const earnedValue = earnedEvt.target?.value * (extraDeliveryCharge ?? 0);
+                            earnedElem.innerText = earnedValue;
+                            rowData = {
+                                ...rowData,
+                                earned: earnedValue
+                            }
+                        }
+                    }
+                });
             }
 
             if (formElem) {

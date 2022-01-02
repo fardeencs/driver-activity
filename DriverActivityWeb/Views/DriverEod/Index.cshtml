@@ -82,7 +82,7 @@
     const btnSearchCallback=(reponse)=>{
         const {data} = reponse ?? {};
         driverUtil.getDriverData({url:commonUtil.APP_URL.GET_DRIVER_EOD, reqData: data, btnId:btnSearchId }, eventResult=>{
-            driverUtil.createDriverForm({eventId: `EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`, rowData: eventResult?.data});
+            driverUtil.createDriverForm({eventId: `EVENT_${commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD}`, rowData: eventResult?.data ?? {}});
             window.onresize = driverUtil.resizeCanvas(driverUtil.driverSignPadId);
         });
     };

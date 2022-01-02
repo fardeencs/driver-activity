@@ -548,6 +548,7 @@ const formUtilities = (function () {
                 cellCtrl.appendChild(button);
                 break;
             case 'TEXT':
+                cellCtrl.id = field;
                 cellCtrl.innerHTML = `${(prefix || '')} ${(cellVal || '')} ${(suffix || '')}`;
                 isCellMsg = false;
                 if (value) {
@@ -557,14 +558,17 @@ const formUtilities = (function () {
                 }
                 break;
             case 'NUMBER':
+                cellCtrl.id = field;
                 cellCtrl.innerHTML = `${(prefix || '')} ${isNumnerFormat ? numberFormatter.format(cellVal ?? 0) : (cellVal ?? 0)}  ${(suffix || '')}`;
                 isCellMsg = false;
                 break;
             case 'DATE':
+                cellCtrl.id = field;
                 cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = `${(prefix || '')} ${dateFormatter(cellVal, dir, format, isEnglish)} ${(suffix || '')}`;
                 break;
             case 'DATE_TIME':
+                cellCtrl.id = field;
                 cellCtrl.classList.add(`cell-${field}`);
                 cellCtrl.innerHTML = `${(prefix || '')} ${dateTimeFormatter(cellVal, dir, format, isEnglish)} ${(suffix || '')}`;
                 break;

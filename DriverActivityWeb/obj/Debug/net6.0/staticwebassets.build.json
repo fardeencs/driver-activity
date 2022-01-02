@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "U96xsvlzlEZauyFBslMY5KlMOdey2QiyI+4X8OU5jMs=",
+  "Hash": "7B+aV2nn0Y7ykv60jGrZsSAHzPS5vCVQNa91oNjrX7o=",
   "Source": "DriverActivityWeb",
   "BasePath": "_content/DriverActivityWeb",
   "Mode": "Default",
@@ -66,6 +66,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\AppStyle.css"
+    },
+    {
+      "Identity": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\wwwroot\\css\\loginStyle.css",
+      "SourceId": "DriverActivityWeb",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\wwwroot\\",
+      "BasePath": "_content/DriverActivityWeb",
+      "RelativePath": "css/loginStyle.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\loginStyle.css"
     },
     {
       "Identity": "C:\\SourceCode\\freelance\\git-repository\\driver-activity\\DriverActivityWeb\\wwwroot\\css\\site.css",

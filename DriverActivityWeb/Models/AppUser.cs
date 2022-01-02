@@ -12,7 +12,8 @@ namespace DriverActivityWeb.Models
         public string? FileID { get; set; }
         [Required]
         public string NameEn { get; set; }
-        public string? NameAr { get; set; }
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
         public int? StaffId { get; set; }
         public int? QID { get; set; }
         [ForeignKey("VehicleType")]

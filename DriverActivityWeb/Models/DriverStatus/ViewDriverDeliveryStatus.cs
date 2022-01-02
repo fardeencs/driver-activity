@@ -15,5 +15,6 @@
         public int? Drops { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string? DutyStatus { get; set; }
+        public string? Route { get; set; }
     }
 }

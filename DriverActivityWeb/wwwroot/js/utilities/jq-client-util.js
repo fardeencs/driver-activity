@@ -20,6 +20,7 @@
     http.GetVideoUrl = getVideoUrl;
     http.GetFileUrl = getFileUrl;
     http.ViewFile = viewFile;
+    http.Login = login;
 
 
     function httpGet({ url, jsonData, onSuccess, showLoading, loaderText, onError, dataType, returnType,
@@ -173,6 +174,32 @@
 
         return 0; // Successful
     }
+
+    function login({ username, password, btnLoaderId }) {
+        btnLoaderId = btnLoaderId ?? 'btnLogin';
+        $.ajax({
+            type: "POST",
+            url: '/login/home/authenticate',
+            cache: false,
+            data: JSON.stringify({ username, password}),
+            //dataType: dataType,
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (btnLoaderId) {
+                    commonUtil.btnProgress(btnLoaderId, true);
+                }
+                //onSuccess(response);
+            },
+            error: function (xhr) {
+                if (btnLoaderId) {
+                    commonUtil.btnProgress(btnLoaderId, true);
+                }
+                commonUtil.serverError(xhr);
+                //onError(xhr);
+            }
+
+        });
+    };
 
     function downloadFile({ url, params, blobName, storageContainerType, fileName, elementId, loaderId, isDownload = true, arg0, arg1, isCssLoader }, callback) {
         if (isCssLoader && loaderId) {

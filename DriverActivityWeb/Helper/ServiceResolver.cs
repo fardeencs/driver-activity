@@ -8,6 +8,7 @@ namespace DriverActivityWeb.Helper
     {
         public static void Resolver(WebApplicationBuilder builder)
         {
+            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
             /*builder.Services.AddControllers().AddNewtonsoftJson(options =>
             {
                 // Use the default property (Pascal) casing
@@ -20,6 +21,7 @@ namespace DriverActivityWeb.Helper
             builder.Services.AddScoped<IDriverStatusService, DriverStatusService>();
             builder.Services.AddScoped<IApplicationService, ApplicationService>();
             builder.Services.AddScoped<IDriverEODService, DriverEODService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             
         }
     }

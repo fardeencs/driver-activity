@@ -31,6 +31,16 @@ namespace DriverActivityWeb.Services
 
         }
 
+        public async Task<decimal?> GetRouteDeliveryCharges(string routeCode)
+        {
+            if(AppUtility.IsEmpty(routeCode)) return 0;
+
+            var routeConfig = await this._dbContext.RouteConfig.Where(x => x.RouteCode == routeCode).FirstOrDefaultAsync();
+            return routeConfig?.ExtraDeliveryCharge ?? 0;
+        }
+
+
+
         public async Task<PaginatedList<ViewDriverDeliveryStatusVM>> GetDriverDeliveryStatus(SearchEntity message)
         {
             if(message.IsSearch.HasValue && message.IsSearch.Value && AppUtility.IsNotEmpty(message.QID))

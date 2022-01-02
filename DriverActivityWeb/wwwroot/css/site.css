@@ -127,7 +127,7 @@ canvas#driverSignPad {
 }
 
 #driver-eod-section .cell-total, #driver-eod-section .cell-delivered,
-#driver-eod-section .cell-failed, #driver-eod-section .cell-drops {
+#driver-eod-section .cell-failed, #driver-eod-section .cell-drops, #driver-eod-section .cell-earned {
     display: flex;
     flex-direction: row;
     align-items: center;
