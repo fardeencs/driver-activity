@@ -18,12 +18,15 @@ body {
     min-height: 100vh;
     font-family: 'Jost', sans-serif;
     /*background: linear-gradient(to bottom, var(--secondry-color), #7771b3, var(--secondry-color));*/
-    background:#ddd;
+    background: #ddd;
 }
 
 .main {
-    width: 350px;
-    height: 500px;
+    /*  width: 350px;
+    height: 500px;*/
+    width: 22rem;
+    height: 35rem;
+    /* background: re
     /*background: red;*/
     background: var(--primary-color);
     overflow: hidden;
@@ -48,6 +51,7 @@ label {
     justify-content: center;
     display: flex;
     margin: 60px;
+    margin-bottom: 10px;
     font-weight: bold;
     cursor: pointer;
     transition: .5s ease-in-out;
@@ -55,7 +59,7 @@ label {
 
 input {
     width: 60%;
-    height: 20px;
+    /*height: 20px;*/
     background: #e0dede;
     justify-content: center;
     display: flex;
@@ -66,7 +70,16 @@ input {
     border-radius: 5px;
 }
 
-button {
+.spn-error {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    /*padding: 10px;*/
+}
+
+
+
+.login-button {
     width: 60%;
     height: 40px;
     margin: 10px auto;
@@ -89,7 +102,8 @@ button {
     }
 
 .login {
-    height: 460px;
+    /*height: 460px;*/
+    height: 33rem;
     background: #eee;
     border-radius: 60% / 10%;
     transform: translateY(-180px);
@@ -102,7 +116,8 @@ button {
     }
 
 #chk:checked ~ .login {
-    transform: translateY(-500px);
+    /*transform: translateY(-500px);*/
+    transform: translateY(-35rem);
 }
 
     #chk:checked ~ .login label {

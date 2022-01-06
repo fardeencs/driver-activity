@@ -1,15 +1,44 @@
 using DriverActivityWeb.Data;
 using DriverActivityWeb.Helper;
 using DriverActivityWeb.Middleware;
+//using DriverActivityWeb.ModelValidator;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddAutoMapper(typeof(Startup));
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add services to the container.
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
+builder.Services.AddMvc(o =>
+{
+    o.Filters.Add(new ValidationFilterAttribute());
+}).AddFluentValidation(v =>
+{
+    //v.RegisterValidatorsFromAssemblyContaining(AppDomain.CurrentDomain.GetAssemblies());
+    v.DisableDataAnnotationsValidation = true;
+    v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
 
+//.AddFluentValidation(v =>
+//{
+//    v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+//    v.DisableDataAnnotationsValidation = true;
+//    //v.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+//});
+
+//builder.Services
+//  .AddFluentValidation(fv => {
+//      fv.RegisterValidatorsFromAssemblyContaining<AuthenticateRequestValidator>();
+//      fv.DisableDataAnnotationsValidation = true;
+//  });
+/*builder.Services.AddFluentValidation(v =>
+{
+    //v.RegisterValidatorsFromAssemblyContaining(AppDomain.CurrentDomain.GetAssemblies());
+    v.DisableDataAnnotationsValidation = true;
+    v.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+});*/
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

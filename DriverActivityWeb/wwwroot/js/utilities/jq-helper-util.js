@@ -697,10 +697,22 @@
             return "ARRAY";
         }
         if (type === "OBJECT") {
-            const { responseText, responseJSON } = XMLHttpRequest;
+            const { responseText, responseJSON, status } = XMLHttpRequest;
             if (responseJSON) {
                 const { message, Message } = responseJSON;
-                return notificationUtil.error(message ?? Message);
+                if (message || Message)
+                    return notificationUtil.error(message ?? Message);
+                else if (status == 422){
+                    const errors = Object.values(XMLHttpRequest.responseJSON);
+                    if (errors) {
+                        let ul = $('<ul/>');
+                        errors.forEach(err => {
+                            ul.append($('<li/>').html(err));
+                        });
+                        notificationUtil.error(ul);
+                    }
+                    return;
+                }
             }
             else if (responseText) {
                 return notificationUtil.error(responseText.substring(0, 100));

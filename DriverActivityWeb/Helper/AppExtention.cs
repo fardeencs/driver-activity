@@ -4,6 +4,8 @@ namespace DriverActivityWeb.Helper
 {
     public static class AppExtention
     {
+        private const string EMPTY_MSG = "{0} can't be empty.";
+
         public static byte[] ConvertToByteArray(this IFormFile file)
         {
             byte[]? imageBytes = null;
@@ -43,6 +45,11 @@ namespace DriverActivityWeb.Helper
                 return true;
             else
                 return false;
+        }
+
+        public static string RequiredMsg(this string key)
+        {
+            return string.Format(EMPTY_MSG, key);
         }
 
     }

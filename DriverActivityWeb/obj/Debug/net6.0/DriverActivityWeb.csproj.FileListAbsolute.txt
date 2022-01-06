@@ -334,3 +334,4 @@ C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb\bin\Deb
 C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
 C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll
 C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb\obj\Debug\net6.0\DriverActivityWeb.MvcApplicationPartsAssemblyInfo.cs
+C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll

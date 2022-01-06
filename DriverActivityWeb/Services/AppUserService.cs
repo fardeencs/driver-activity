@@ -20,11 +20,27 @@
             this._dbContext = dbContext;
         }
 
-        public User? GetUser(string userName, string password)
+        public bool IsValidUser(string userName, string password)
+        {
+            if(AppUtility.IsEmpty(userName) || AppUtility.IsEmpty(password))
+                return false;
+
+            return this._dbContext.AppUser.Where(x => x.UserName == userName && x.Password == password && x.IsActive == true && x.IsDeleted == false).Any();
+        }
+
+        public bool IsValidUser(string userName)
+        {
+            if (AppUtility.IsEmpty(userName))
+                return false;
+
+            return this._dbContext.AppUser.Where(x => x.UserName == userName && x.IsActive == true && x.IsDeleted == false).Any();
+        }
+
+        public UserVM? GetUser(string userName, string password)
         {
            var user = this._dbContext.AppUser.Where(x => x.UserName == userName && x.Password == password)
                 .Where(x => x.IsActive == true && x.IsDeleted == false)
-                .Select(x => new User
+                .Select(x => new UserVM
                 {
                     Username = x.UserName,
                     Password = x.Password,
@@ -34,10 +50,10 @@
             return user; 
         }
 
-        public User? GetUser(long userId)
+        public UserVM? GetUser(long userId)
         {
             var user = this._dbContext.AppUser.Where(x => x.UserId == userId)
-                 .Select(x => new User
+                 .Select(x => new UserVM
                  {
                      Username = x.UserName,
                      Name = x.NameEn,

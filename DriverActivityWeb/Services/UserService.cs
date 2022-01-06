@@ -43,7 +43,7 @@
 
         // helper methods
 
-        private string generateJwtToken(User user)
+        private string generateJwtToken(UserVM user)
         {
             // generate token that is valid for 30 min
             var tokenHandler = new JwtSecurityTokenHandler();

@@ -1,4 +1,5 @@
 ﻿using DriverActivityWeb.ViewModels;
+using FluentValidation;
 using System.Net;
 using System.Text.Json;
 
@@ -20,6 +21,29 @@ public class ErrorHandlerMiddleware
             var response = context.Response;
             response.ContentType = "application/json";
             var responseModel = ApiResponse<string>.Fail(error.Message);
+            var exceptionType = error.GetType();
+            //if (exceptionType == typeof(ValidationException))
+            //{
+            //    var resp = new HttpResponseMessage(HttpStatusCode.BadRequest) { Content = new StringContent(error.Message), ReasonPhrase = "ValidationException", };
+            //    response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //    //r result = JsonSerializer.Serialize(resp);
+            //}
+            //else if (exceptionType == typeof(CustomException))
+            //{
+            //    response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //}
+            //else if (exceptionType == typeof(KeyNotFoundException))
+            //{
+            //    response.StatusCode = (int)HttpStatusCode.NotFound;
+            //}
+            //else if (exceptionType == typeof(UnauthorizedAccessException))
+            //{
+            //    response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            //}
+            //else
+            //{
+            //    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            //}
             switch (error)
             {
                 case CustomException e:
