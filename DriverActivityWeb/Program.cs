@@ -21,24 +21,6 @@ builder.Services.AddMvc(o =>
     v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 });
 
-//.AddFluentValidation(v =>
-//{
-//    v.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-//    v.DisableDataAnnotationsValidation = true;
-//    //v.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-//});
-
-//builder.Services
-//  .AddFluentValidation(fv => {
-//      fv.RegisterValidatorsFromAssemblyContaining<AuthenticateRequestValidator>();
-//      fv.DisableDataAnnotationsValidation = true;
-//  });
-/*builder.Services.AddFluentValidation(v =>
-{
-    //v.RegisterValidatorsFromAssemblyContaining(AppDomain.CurrentDomain.GetAssemblies());
-    v.DisableDataAnnotationsValidation = true;
-    v.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-});*/
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
