@@ -1,7 +1,7 @@
+using DriverActivityWeb.CustomAttributes;
 using DriverActivityWeb.Data;
 using DriverActivityWeb.Helper;
 using DriverActivityWeb.Middleware;
-//using DriverActivityWeb.ModelValidator;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -9,6 +9,7 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 builder.Services.AddMvc(o =>
@@ -40,6 +41,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
+
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -64,12 +67,24 @@ app.UseMiddleware<JwtMiddleware>();
 //    //);
 //});
 
+/*app.MapAreaControllerRoute(name: "login_route",
+                                     areaName: "login",
+                                     pattern: "{area:exists}/{controller}/{action}/{id?}");*/
+
+/*app.MapAreaControllerRoute("login_route", "login",
+        "login/{controller}/{action}/{id?}");
+*/
+
 app.MapControllerRoute(
-     name: "default",
+     name: "login_route",
      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+
+
+
+
 
 app.Run();

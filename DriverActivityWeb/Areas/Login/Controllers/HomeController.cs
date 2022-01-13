@@ -6,13 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 namespace DriverActivityWeb.Areas.Login.Controllers
 {
     [Area("login")]
-    //[Route("[controller]")]
     public class HomeController : Controller
     {
         private IUserService _userService;
-        public HomeController(IUserService userService)
+        private readonly IAppUserService appUserService;
+
+        public HomeController(IUserService userService,
+            IAppUserService appUserService)
         {
             _userService = userService;
+            this.appUserService = appUserService;
         }
 
         [HttpGet]
@@ -22,21 +25,45 @@ namespace DriverActivityWeb.Areas.Login.Controllers
             return View();
         }
 
-        //[HttpPost("authenticate")]
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Authenticate([FromBody] AuthenticateRequest request)
-        //public IActionResult Authenticate(AuthenticateRequest request)
         {
-            var isValid = ModelState.IsValid;
             var response = _userService.Authenticate(request);
-
-            if (response == null)
-                throw new UnauthorizedAccessException("Username or password is incorrect");
-
             return Ok(new ResponseEntity(response));
-            //return View(response);
+        }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        {
+            if (request == null)
+                throw new CustomException("Request params not found");
+
+            request.SessionUserId = 1;
+            var response = await this.appUserService.SaveOrUpdateData(request);
+            return Json(new ResponseEntity(response));
+        }
+
+
+        [HttpGet, Authorize]
+        public IActionResult GetMe()
+        {
+            var result = _userService.GetSessionUserName();
+            return Ok(new ResponseEntity(result));
+        }
+
+
+
+       
+         
+        
+           /* //var userName = User?.Identity?.Name;
+            //var userName2 = User.FindFirstValue(ClaimTypes.Name);
+            //var role = User.FindFirstValue(ClaimTypes.Role);
+            //return Ok(new { userName, userName2, role });
+         //return View(response);
+        return RedirectToAction("Index", "Home", new { area = "login" });*/
             //if (ModelState.IsValid)
             //{
             //    //var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, request.RememberMe, false);
@@ -49,7 +76,8 @@ namespace DriverActivityWeb.Areas.Login.Controllers
             //    ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
 
             //}
-            //return View(request);
-        }
+            //return View(request);*/
+         
+        
     }
 }

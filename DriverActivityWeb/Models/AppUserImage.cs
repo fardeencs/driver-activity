@@ -11,6 +11,7 @@ namespace DriverActivityWeb.Models
         public string FileID { get; set; }
         [Required]
         public byte[] ImgContent { get; set; }
+        public bool? IsTemp { get; set; } = false;
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
         public DateTime CreatedDate { get; set; } = DateTime.Now;

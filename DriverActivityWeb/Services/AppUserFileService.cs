@@ -67,6 +67,8 @@ namespace DriverActivityWeb.Services
             await this._dbContext.SaveChangesAsync();
             message.File = null;
 
+            await DeleteAllTempUserImages().ConfigureAwait(false);
+
             return message;
         }
 
@@ -185,6 +187,19 @@ namespace DriverActivityWeb.Services
             result = true;
 
             return result;
+        }
+
+        private async Task DeleteAllTempUserImages()
+        {
+            var today = DateTime.Today;
+            var allTempImages = await this._dbContext.AppUserImage.Where(x => x.IsTemp == true
+            && x.IsActive == false && x.IsDeleted == false
+            && x.CreatedDate.Date < today).ToListAsync();
+            if (allTempImages != null && allTempImages.Count > 0)
+            {
+                this._dbContext.RemoveRange(allTempImages);
+                await this._dbContext.SaveChangesAsync();
+            }
         }
 
     }

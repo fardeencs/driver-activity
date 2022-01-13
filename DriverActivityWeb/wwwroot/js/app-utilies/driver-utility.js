@@ -95,7 +95,8 @@
                 isRequired: true,
                 ddlLabelAttr: 'vehicle',
                 ddlValueAttr: 'vehicleID',
-                collections: vehicleList
+                collections: vehicleList,
+                clazz: ['form-select']
             },
             /*{
                 controlName: 'driverImage',
@@ -506,7 +507,6 @@
     const saveFormData = ({ reqData, btnEventObj, url }) => {
         const { btnId, liId } = btnEventObj;
         const eventKey = liId.replace('EVENT_', '');
-        //commonUtil.btnProgress(btnId);
         jqClient.Post({
             url: url ?? "/Home/SaveFormData",
             jsonData: reqData,
@@ -676,7 +676,9 @@
         }
 
         const body = formUtilities.createViewWindow(formDef);
-        document.querySelector(`#${driverContainerId}`).append(body);
+        const appendElem = document.querySelector(`#${driverContainerId}`);
+        appendElem.innerHTML = "";
+        appendElem.append(body);
         const formElem = formUtilities.getFormElem(ctrlId);
 
         if (eventKey === commonUtil.STATUS_MASTER_TYPE.DRIVER_EOD) {
@@ -721,7 +723,7 @@
                                               <div class="q-column eod-profile-details">
                                                 <div>${name ?? NO_DATA} </div>
                                                 <div>${staffId ?? NO_DATA}</div>
-                                                <div>${driverUtil.getActionDate(new Date(viewCreatedDate), commonUtil.DATE_FORMAT.ll) ?? NO_DATA} </div>
+                                                <div>${viewCreatedDate ? (driverUtil.getActionDate(new Date(viewCreatedDate), commonUtil.DATE_FORMAT.ll)) : NO_DATA} </div>
                                               </div>`;
                     profilePictureSectionElm.innerHTML = profileTemplate;
                 }
@@ -799,9 +801,13 @@
     const getDriverData = ({ url, reqData, btnId }, callback) => {
         jqClient.Get({
             url: url ?? commonUtil.APP_URL.LOAD_DRIVER_DATA,
-            dataType: 'text',
+            //dataType: 'text',
             btnLoaderId: btnId,
             jsonData: reqData,
+            config: {
+                //contentType: 'application/json; charset=utf-8',
+                //contentType: 'text/plain',
+            },
             onSuccess: (response) => {
                 if (callback)
                    return callback(response);

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Linq;
 
-namespace DriverActivityWeb.Helper
+namespace DriverActivityWeb.CustomAttributes
 {
     /*public class ValidateFilterAttribute : ResultFilterAttribute
     {

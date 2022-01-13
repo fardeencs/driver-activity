@@ -191,15 +191,17 @@
     };
 
     const APP_URL = {
-        UPLOAD_DRIVER_IMAGE: `/Home/SaveProfileImage`,
-        SAVE_DRIVER_FORM: `/Home/SaveOrUpdateUserData`,
-        UPDATE_DRIVER_FORM: ``,
-        UPLOAD_DRIVER_SIGNATURE: `/Home/SaveSignatureImage`,
-        SAVE_DRIVER_EOD_FORM: `/DriverEod/SaveOrUpdateDriverEOD`,
-        LOAD_DRIVER_DATA: `/Home/GetDriverData`,
-        GET_USER_SIGNATURE: `/DriverEod/GetUserSignature`,
-        GET_DRIVER_EOD: `/DriverEod/SearchDriverData`,
         GET_DRIVER_DELIVERY_STATUS_DATA: `/Dashboard/GetDriverDeliveryStatus`,
+        UPLOAD_DRIVER_IMAGE: `/api/driver/SaveProfileImage`,
+        UPLOAD_DRIVER_SIGNATURE: `/api/driver/SaveSignatureImage`,
+        SAVE_DRIVER_FORM: `/api/driver/SaveOrUpdateUserData`,
+        GET_DRIVER_EOD: `/api/driver/SearchDriverData`,
+        SAVE_DRIVER_EOD_FORM: `/api/driver/SaveOrUpdateDriverEOD`,
+        LOAD_DRIVER_DATA: `/api/driver/GetDriverData`,
+        UPDATE_DRIVER_FORM: ``,
+        GET_USER_SIGNATURE: `/DriverEod/GetUserSignature`,
+        LOGIN_HOME_URL: '/login/home',
+        REGISTER_URL: '/login/home/register'
     };
 
     const uuidv4 = () => {
@@ -699,10 +701,13 @@
         if (type === "OBJECT") {
             const { responseText, responseJSON, status } = XMLHttpRequest;
             if (responseJSON) {
-                const { message, Message } = responseJSON;
-                if (message || Message)
-                    return notificationUtil.error(message ?? Message);
-                else if (status == 422){
+                const { message, Message, title } = responseJSON;
+                if (status == 401) {
+                    storeUtil.clearAll();
+                    notificationUtil.error("Unauthorized");
+                    window.location.href = commonUtil.APP_URL.LOGIN_HOME_URL;
+                }
+                else if (status == 422) {
                     const errors = Object.values(XMLHttpRequest.responseJSON);
                     if (errors) {
                         let ul = $('<ul/>');
@@ -713,6 +718,9 @@
                     }
                     return;
                 }
+                else if (message || Message || title)
+                    return notificationUtil.error(message ?? Message ?? title);
+                
             }
             else if (responseText) {
                 return notificationUtil.error(responseText.substring(0, 100));

@@ -199,3 +199,9 @@ canvas#driverSignPad {
     font-size: 1.5rem;
 }
 
+#MAIN_FORM_EVENT_DRIVER_EOD .cell-earned div {
+    color: var(--six-color);
+    font-weight: 500;
+    font-size: 1.5rem;
+}
+

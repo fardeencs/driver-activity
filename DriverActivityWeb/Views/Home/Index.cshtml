@@ -6,7 +6,7 @@
 
 @section Styles{
 <link rel="stylesheet" href="~/lib/cropperjs/dist/cropper.css" />
-<link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="~/lib/DataTables/datatables.min.css" />
 <style type="text/css">
     .label {
         cursor: pointer;
@@ -29,6 +29,12 @@
 
 
 <div class="text-center">
+
+    @*<section>
+        <button type="button" id="testBtn" >Click ME</button>
+        </section>*@
+
+
     <section>
         <div class="container">
             <label class="label" data-toggle="tooltip" title="Change your avatar">
@@ -70,8 +76,8 @@
     <section>
         <div class="container">
             <div id="driver-data-container">
-                <table id="tbl-driver" cellpadding='0' cellspacing='0' width="100%" 
-                class="display table table-bordered table-striped table-hover compact"></table>
+                <table id="tbl-driver" cellpadding='0' cellspacing='0' width="100%"
+                       class="display table table-bordered table-striped table-hover compact"></table>
             </div>
         </div>
     </section>
@@ -96,17 +102,15 @@
     driverUtil.createDriverForm({eventId: `EVENT_${commonUtil.STATUS_MASTER_TYPE.SUBMIT}`, vehicleList: vehicles});
 
     window.addEventListener('DOMContentLoaded', function () {
-      var avatar = document.getElementById('avatar');
-      var image = document.getElementById('image');
-      var input = document.getElementById('input');
-      var $progress = $('.progress');
-      var $progressBar = $('.progress-bar');
-      var $alert = $('.alert');
-      var $modal = $('#modal');
-      var cropper;
-      var fileName = null;
-
-      //$('[data-toggle="tooltip"]').tooltip();
+      const avatar = document.getElementById('avatar');
+      const image = document.getElementById('image');
+      const input = document.getElementById('input');
+      const $progress = $('.progress');
+      const $progressBar = $('.progress-bar');
+      const $alert = $('.alert');
+      const $modal = $('#modal');
+      let cropper;
+      let fileName = null;
 
       input.addEventListener('change', function (e) {
         var files = e.target.files;
@@ -141,8 +145,8 @@
           viewMode: 3,
         });
       }).on('hidden.bs.modal', function () {
-        cropper.destroy();
-        cropper = null;
+           cropper.destroy();
+           cropper = null;
       });
 
       document.getElementById('crop').addEventListener('click', function () {
@@ -164,49 +168,66 @@
             var formData = new FormData();
 
             formData.append('avatar', blob, fileName);
-            $.ajax(commonUtil.APP_URL.UPLOAD_DRIVER_IMAGE, {
-              method: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
 
-              xhr: function () {
-                var xhr = new XMLHttpRequest();
+            jqClient.Post({
+                url: commonUtil.APP_URL.UPLOAD_DRIVER_IMAGE,
+                jsonData: formData,
+                //btnLoaderId: btnId,
+                config: {
+                  processData: false,
+                  contentType: false,
+                  xhr: function () {
+                    var xhr = new XMLHttpRequest();
+                    xhr.upload.onprogress = function (e) {
+                      var percent = '0';
+                      var percentage = '0%';
 
-                xhr.upload.onprogress = function (e) {
-                  var percent = '0';
-                  var percentage = '0%';
-
-                  if (e.lengthComputable) {
-                    percent = Math.round((e.loaded / e.total) * 100);
-                    percentage = percent + '%';
-                    $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
-                  }
-                };
-
-                return xhr;
-              },
-
-              success: function (result) {
-                const {fileID} = result.data;
-                $alert.show().addClass('alert-success').text('Upload success');
-                driverUtil.fileID =  fileID;
-              },
-
-              error: function () {
-                avatar.src = initialAvatarURL;
-                $alert.show().addClass('alert-warning').text('Upload error');
-              },
-
-              complete: function () {
-                $progress.hide();
-              },
+                      if (e.lengthComputable) {
+                        percent = Math.round((e.loaded / e.total) * 100);
+                        percentage = percent + '%';
+                        $progressBar.width(percentage).attr('aria-valuenow', percent).text(percentage);
+                      }
+                    };
+                    return xhr;
+                  },
+                  complete: function () {
+                    $progress.hide();
+                  },
+                },
+                onSuccess: function(result) {
+                    const {fileID} = result.data;
+                    driverUtil.fileID =  fileID;
+                    notificationUtil.success("Upload success");
+                },
+                onError: function(xhr){
+                     avatar.src = initialAvatarURL;
+                    commonUtil.serverError(xhr)
+                }
             });
+
+
+
+
           });
         }
+
       });
 
     });
+
+
+
+    //document.getElementById('testBtn').addEventListener('click', function () {
+    //     jqClient.Get({
+    //        url: '/Home/GetSessionUser',
+    //        onSuccess: (response) => {
+    //           console.log('GetSessionUser', response);
+    //        }
+    //    });
+    //  });
+
+
+
 
 </script>
 }

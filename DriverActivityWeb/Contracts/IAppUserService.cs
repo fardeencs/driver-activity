@@ -5,7 +5,9 @@ namespace DriverActivityWeb.Contracts
     public interface IAppUserService
     {
         bool IsValidUser(string userName, string password);
-        bool IsValidUser(string userName);
+        bool IsValidUser(string userName, bool? isActive = true);
+        bool IsUserNameExsit(string userName);
+        bool IsStaffIDExist(int staffId);
         UserVM? GetUser(long userId);
         UserVM? GetUser(string userName, string password);
         Task<List<AppUserVM>> GetData(SearchEntity message);

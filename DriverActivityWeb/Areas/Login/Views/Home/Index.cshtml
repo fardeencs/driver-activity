@@ -19,18 +19,18 @@
         <input type="checkbox" id="chk" aria-hidden="true">
 
         <div class="signup">
-            <form>
+            <form id="registerForm">
                 <label for="chk" aria-hidden="true">Sign up</label>
-                <input type="text" name="username" placeholder="User name" required="">
-                <input type="text" name="name" placeholder="Full Name" required="">
-                <input type="text" name="staffId" placeholder="Staff ID" required="">
-                <input type="password" name="password" placeholder="Password" required="">
+                <input type="text" name="username" placeholder="User name" placeholder="Enter User Name">
+                <input type="text" name="name" placeholder="Full Name" placeholder="Enter Full Name">
+                <input type="text" name="staffId" placeholder="Staff ID" placeholder="Enter Staff ID">
+                <input type="password" name="password" placeholder="Password" placeholder="Enter Password">
                 <button type="submit" id="btnRegister" class="two-tone-button login-button">Sign up</button>
             </form>
         </div>
 
         <div class="login">
-            <form>
+            <form id="loginForm">
                 <label for="chk" aria-hidden="true">Login</label>
                 <input type="text" name="username" id="username" placeholder="Enter User Name">
                 <input type="password" name="password" id="password" placeholder="Enter Password">
@@ -42,11 +42,13 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/lib/toastr/build/toastr.min.js"></script>
+<script src="~/lib/crypto-js/crypto-js.js"></script>
 
 <script src="~/js/utilities/jq-client-util.js"></script>
 <script src="~/js/utilities/jq-messag-util.js"></script>
 <script src="~/js/utilities/jq-helper-util.js"></script>
 <script src="~/js/utilities/jq-form-util.js"></script>
+<script src="~/js/utilities/jq-store-util.js"></script>
 
 <script type="text/javascript">
 
@@ -57,7 +59,8 @@
             const btnLoginId = 'btnLogin',
             btnRegisterId = 'btnRegister',
             usernameId ='username',
-            passwordId ='password'
+            passwordId ='password',
+            registerFormId ='registerForm'
 
                 ;
 
@@ -66,6 +69,18 @@
                  jqClient.Login({
                      username: $(`#${usernameId}`).val(), 
                      password:$(`#${passwordId}`).val(),
+                 });
+             });
+
+             document.getElementById(btnRegisterId).addEventListener("click", evt=>{
+                 evt.preventDefault();
+
+                const formValues = formUtilities.getFormControlValue(registerFormId);
+                const formElem = formUtilities.getFormElem(registerFormId);
+                 jqClient.Register({
+                     username: $(`#${usernameId}`).val(), 
+                     password:$(`#${passwordId}`).val(),
+
                  });
              });
 

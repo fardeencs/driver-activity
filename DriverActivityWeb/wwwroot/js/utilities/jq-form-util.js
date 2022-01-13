@@ -288,8 +288,8 @@ const formUtilities = (function () {
         isLabel = isLabel ?? true;
         isFieldset == isFieldset ?? false;
         isCellMsg = isCellMsg ?? true;
-        clazz = clazz ?? '';
-        const clazzArr = clazz.split(',');
+        clazz = clazz ?? [];
+        //const clazzArr = clazz.split(',');
         const cell = document.createElement('div');
         const cellMsg = document.createElement('div');
         const cellId = rowId + '-cell-' + field;
@@ -474,16 +474,23 @@ const formUtilities = (function () {
                 const select = document.createElement('select');
                 select.id = field;
                 select.name = field;
-                select.setAttribute("placeholder", placeholder);
+                //select.setAttribute("placeholder", placeholder);
                 select.setAttribute("data-key", field);
                 if (multiple) {
                     select.setAttribute("multiple", true);
                 }
                 //"select2"
                 select.classList.add("selectbox-" + field, 'view-control', 'form-control');
+                select.classList.add(...clazz);
                 const placeholderOption = document.createElement('option');
+                placeholderOption.text = placeholder;
+                placeholderOption.value = "";
+                placeholderOption.setAttribute("disabled", true);
+                placeholderOption.setAttribute("selected", true);
+                placeholderOption.setAttribute("hidden", true);
                 select.appendChild(placeholderOption);
                 const ddlCollections = collections ?? [];
+                //<option hidden >Display but don't show in list</option>
                 ddlCollections.forEach((item, i) => {
                     const option = document.createElement('option');
                     option.text = item.label ?? item[ddlLabelAttr];

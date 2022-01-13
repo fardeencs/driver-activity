@@ -28,12 +28,22 @@
             return this._dbContext.AppUser.Where(x => x.UserName == userName && x.Password == password && x.IsActive == true && x.IsDeleted == false).Any();
         }
 
-        public bool IsValidUser(string userName)
+        public bool IsValidUser(string userName, bool? isActive = true)
         {
             if (AppUtility.IsEmpty(userName))
                 return false;
 
-            return this._dbContext.AppUser.Where(x => x.UserName == userName && x.IsActive == true && x.IsDeleted == false).Any();
+            return this._dbContext.AppUser.Where(x => x.UserName == userName && x.IsActive == isActive && x.IsDeleted == false).Any();
+        }
+
+        public bool IsUserNameExsit(string userName)
+        {
+            return this._dbContext.AppUser.Where(x => x.UserName == userName).Any();
+        }
+
+        public bool IsStaffIDExist(int staffId)
+        {
+            return this._dbContext.AppUser.Where(x => x.StaffId == staffId).Any();
         }
 
         public UserVM? GetUser(string userName, string password)
@@ -52,7 +62,7 @@
 
         public UserVM? GetUser(long userId)
         {
-            var user = this._dbContext.AppUser.Where(x => x.UserId == userId)
+            var user = this._dbContext.AppUser.Where(x => x.UserId == userId && x.IsDeleted == false && x.IsActive == true)
                  .Select(x => new UserVM
                  {
                      Username = x.UserName,
@@ -138,7 +148,7 @@
             {
                 saveObj.StaffId = Convert.ToInt32(message.StaffId);
                 saveObj.QID = Convert.ToInt32(message.QID);
-                //saveObj.VehicleID = Convert.ToInt32(message.VehicleID);
+                saveObj.Password = message.Password;
                 saveObj.CreatedBy = message.SessionUserId.Value;
                 saveObj.CreatedDate = date;
                 await this._dbContext.AddAsync(saveObj);
@@ -150,7 +160,9 @@
                     if(null != userImage)
                     {
                         userImage.IsActive = true;
+                        userImage.IsTemp = false;
                         this._dbContext.Update(userImage);
+                        
                     }
                 }
 
@@ -161,7 +173,6 @@
             }
 
             await this._dbContext.SaveChangesAsync();
-
 
             return message;
 
@@ -217,6 +228,10 @@
 
             return result;
         }
+
+
+        
+        
 
     }
 }

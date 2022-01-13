@@ -28,22 +28,6 @@ public class ErrorHandlerMiddleware
             //    response.StatusCode = (int)HttpStatusCode.BadRequest;
             //    //r result = JsonSerializer.Serialize(resp);
             //}
-            //else if (exceptionType == typeof(CustomException))
-            //{
-            //    response.StatusCode = (int)HttpStatusCode.BadRequest;
-            //}
-            //else if (exceptionType == typeof(KeyNotFoundException))
-            //{
-            //    response.StatusCode = (int)HttpStatusCode.NotFound;
-            //}
-            //else if (exceptionType == typeof(UnauthorizedAccessException))
-            //{
-            //    response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            //}
-            //else
-            //{
-            //    response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            //}
             switch (error)
             {
                 case CustomException e:
@@ -53,6 +37,10 @@ public class ErrorHandlerMiddleware
                 case KeyNotFoundException e:
                     // not found error
                     response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                case UnauthorizedAccessException e:
+                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    context.Response.Redirect("/login/home");
                     break;
                 default:
                     // unhandled error

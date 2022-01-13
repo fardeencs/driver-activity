@@ -6,5 +6,6 @@
         public byte[] ImgContent { get; set; }
         public string? FileString { get; set; }
         public IFormFile? File { get; set; }
+        public bool? IsTemp { get; set; } = false;
     }
 }

@@ -1,5 +1,10 @@
 ﻿const jqClient = (function (options) {
 
+
+    const BASE_URL = 'https://localhost:7124/',
+        LOGIN_URL = '/login/home/authenticate',
+        REGISTER_URL = '/login/home/register'
+        ;
     this.defaults = {
         showLoading: true,
         loaderContainerId: "#divLoader",
@@ -21,6 +26,7 @@
     http.GetFileUrl = getFileUrl;
     http.ViewFile = viewFile;
     http.Login = login;
+    http.Register = register;
 
 
     function httpGet({ url, jsonData, onSuccess, showLoading, loaderText, onError, dataType, returnType,
@@ -28,6 +34,14 @@
         config = config ?? {};
         //if (showLoading != null ? showLoading : o.showLoading)
         //    showLoader(loaderText != null ? loaderText : o.loaderText);
+
+        const token = storeUtil.getStore(storeUtil.STORE_KEY.TOKEN, false, false);
+        //if (!token) {
+        //    window.location.href = LOGIN_URL;
+        //    return;
+        //}
+            //window.location.replace(`${jqClient.BaseUrl}login.html`);
+
         if (btnLoaderId) {
             commonUtil.btnProgress(btnLoaderId);
         }
@@ -52,6 +66,9 @@
             url,
             cache: false,
             data: jsonData,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            },
             ...config,
             //dataType: dataType,
             //contentType: function () {
@@ -83,7 +100,7 @@
                 if (containerLoaderId) {
                     commonUtil.inlineElementProgress(containerLoaderId, true, containerTopPos, containerLeftPos);
                 }
-                commonUtil.serverError(xhr);
+                //commonUtil.serverError(xhr);
                 onError(xhr);
             }
         });
@@ -94,6 +111,7 @@
     function httpPost({ url, jsonData, showLoading, loaderText, onSuccess, onError, dataType, returnType,
         config, btnLoaderId, containerLoaderId, containerTopPos, containerLeftPos }) {
         config = config ?? {};
+        const token = storeUtil.getStore(storeUtil.STORE_KEY.TOKEN, false, false);
         //if (showLoading != null ? showLoading : o.showLoading)
         //    showLoader(loaderText != null ? loaderText : o.loaderText);
         if (btnLoaderId) {
@@ -132,6 +150,9 @@
             url,
             cache: false,
             data: jsonData,
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+            },
             ...config,
             //dataType: dataType,
             //contentType: "application/json; charset=utf-8",
@@ -166,38 +187,68 @@
                 if (containerLoaderId) {
                     commonUtil.inlineElementProgress(containerLoaderId, true, containerTopPos, containerLeftPos);
                 }
-                commonUtil.serverError(xhr);
+                //commonUtil.serverError(xhr);
                 onError(xhr);
             }
 
         });
 
         return 0; // Successful
-    }
+    };
 
     function login({ username, password, btnLoaderId }) {
         btnLoaderId = btnLoaderId ?? 'btnLogin';
+        commonUtil.btnProgress(btnLoaderId);
         $.ajax({
             type: "POST",
-            url: '/login/home/authenticate',
+            url: LOGIN_URL,
             cache: false,
             data: JSON.stringify({ username, password}),
-            //dataType: dataType,
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (btnLoaderId) {
                     commonUtil.btnProgress(btnLoaderId, true);
                 }
-                //onSuccess(response);
+                if (response && response?.data) {
+                    const { id, name, token, username } = response?.data;
+                    storeUtil.setStore(storeUtil.STORE_KEY.TOKEN, token, false, false);
+                    //storeUtil.setStore(storeUtil.STORE_KEY.USERNAME, username, true);
+                    //storeUtil.setStore(storeUtil.STORE_KEY.USER_ID, id + '', true);
+                    window.location.href = '/home/index';
+                }
             },
             error: function (xhr) {
                 if (btnLoaderId) {
                     commonUtil.btnProgress(btnLoaderId, true);
                 }
                 commonUtil.serverError(xhr);
-                //onError(xhr);
             }
+        });
+    };
 
+    function register({ name, username, password, staffId, btnLoaderId }) {
+        btnLoaderId = btnLoaderId ?? 'btnRegister';
+        commonUtil.btnProgress(btnLoaderId);
+        $.ajax({
+            type: "POST",
+            url: REGISTER_URL,
+            cache: false,
+            data: JSON.stringify({ userName: username, nameEn: name, staffId, password }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response) {
+                if (btnLoaderId) {
+                    commonUtil.btnProgress(btnLoaderId, true);
+                }
+                if (response && response?.data) {
+                    window.location.href = '/home';
+                }
+            },
+            error: function (xhr) {
+                if (btnLoaderId) {
+                    commonUtil.btnProgress(btnLoaderId, true);
+                }
+                commonUtil.serverError(xhr);
+            }
         });
     };
 

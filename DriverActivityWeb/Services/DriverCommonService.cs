@@ -4,6 +4,7 @@ using DriverActivityWeb.Helper;
 using DriverActivityWeb.Models;
 using DriverActivityWeb.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace DriverActivityWeb.Services
 {
@@ -12,14 +13,17 @@ namespace DriverActivityWeb.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly IDriverStatusService driverStatusService;
         private readonly IAppUserService appUserService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DriverCommonService(ApplicationDbContext dbContext,
             IDriverStatusService driverStatusService,
-            IAppUserService appUserService)
+            IAppUserService appUserService,
+            IHttpContextAccessor httpContextAccessor)
         {
             this._dbContext = dbContext;
             this.driverStatusService = driverStatusService;
             this.appUserService = appUserService;
+            this._httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<VehicleType>> GetVehicleType(int id = 0)
@@ -40,6 +44,17 @@ namespace DriverActivityWeb.Services
         }
 
 
+        public UserVM? GetSessionUserName()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                var user = (UserVM)_httpContextAccessor.HttpContext.Items["User"];
+                //result = _httpContextAccessor.HttpContext.User.FindFirstValue (ClaimTypes.Name);
+                return user;
+            }
+            return null;
+        }
 
         public async Task<PaginatedList<ViewDriverDeliveryStatusVM>> GetDriverDeliveryStatus(SearchEntity message)
         {

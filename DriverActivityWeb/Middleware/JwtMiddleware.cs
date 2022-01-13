@@ -11,13 +11,11 @@
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-        //private readonly IAppUserService appUserService;
         private readonly AppSettings _appSettings;
 
         public JwtMiddleware(RequestDelegate next, IOptions<AppSettings> appSettings)
         {
             _next = next;
-            //this.appUserService = appUserService;
             _appSettings = appSettings.Value;
         }
 
@@ -26,12 +24,12 @@
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                attachUserToContext(context, userService, token);
+                AttachUserToContext(context, userService, token);
 
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, IAppUserService userService, string token)
+        private void AttachUserToContext(HttpContext context, IAppUserService userService, string token)
         {
             try
             {
@@ -52,7 +50,6 @@
 
                 // attach user to context on successful jwt validation
                 context.Items["User"] = userService.GetUser(userId);
-                //context.Items["User"] = userService.GetById(userId);
             }
             catch
             {
