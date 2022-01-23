@@ -8,7 +8,7 @@ namespace DriverActivityWeb.Helper
     {
         public static void Resolver(WebApplicationBuilder builder)
         {
-            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+            
             /*builder.Services.AddControllers().AddNewtonsoftJson(options =>
             {
                 // Use the default property (Pascal) casing

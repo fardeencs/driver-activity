@@ -3,18 +3,87 @@ using DriverActivityWeb.Data;
 using DriverActivityWeb.Helper;
 using DriverActivityWeb.Middleware;
 using FluentValidation.AspNetCore;
+using JwtGenerator.Extensions;
+using JwtGenerator.Types;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+var key = Guid.NewGuid().ToString();
+var tokenOptions = new TokenOptions("ISS", "AUD", key);
+
+builder.Services.AddJwtAuthenticationWithProtectedCookie(tokenOptions, "app");
+
 builder.Services.AddControllersWithViews();
+
+/*builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => true;
+    options.MinimumSameSitePolicy = SameSiteMode.None;
+    options.HttpOnly = HttpOnlyPolicy.Always;
+    options.Secure = CookieSecurePolicy.Always;
+});*/
+
+//var SecretKey = Encoding.ASCII.GetBytes("YourKey-2374-OFFKDI940NG7:56753253-tyuw-5769-0921-kfirox29zoxv");
+
+/*builder.Services.AddAuthentication(options =>
+        {
+            // these must be set other ASP.NET Core will throw exception that no
+            // default authentication scheme or default challenge scheme is set.
+            options.DefaultAuthenticateScheme =
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme =
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+    //.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+           .AddCookie(options =>
+           {
+               options.LoginPath = "/login/Account/Signin";
+               options.LogoutPath = "/login/Account/Signout";
+               options.Cookie.Expiration = TimeSpan.FromMinutes(5);
+               options.Cookie.HttpOnly = true;
+               options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+               options.Cookie.SameSite = SameSiteMode.Lax;
+           })
+            .AddJwtBearer(token =>
+            {
+                token.RequireHttpsMetadata = false;
+                token.SaveToken = true;
+                token.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
+                    ValidateIssuer = true,
+                    //Usually this is your application base URL - JRozario
+                    //ValidIssuer = "http://localhost:45092/",
+                    ValidateAudience = true,
+                    //Here we are creating and using JWT within the same application. In this case base URL is fine - JRozario
+                    //If the JWT is created using a web service then this could be the consumer URL - JRozario
+                    //ValidAudience = "http://localhost:45092/",
+                    RequireExpirationTime = true,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });*/
+
+
+
 builder.Services.AddMvc(o =>
 {
     o.Filters.Add(new ValidationFilterAttribute());
+    //o.Filters.Add(new AuthorizeFilter());
+    //o.Filters.Add(new RequireHttpsAttribute())
 }).AddFluentValidation(v =>
 {
     //v.RegisterValidatorsFromAssemblyContaining(AppDomain.CurrentDomain.GetAssemblies());
@@ -41,18 +110,35 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
+app.UseCookiePolicy();
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+//Addd User session - JRozario
+//app.UseSession();
+
+//Add JWToken to all incoming HTTP Request Header - JRozario
+/*app.Use(async (context, next) =>
+{
+    var JWToken = context.Session.GetString("JWToken");
+    if (!string.IsNullOrEmpty(JWToken))
+    {
+        context.Request.Headers.Add("Authorization", "Bearer " + JWToken);
+    }
+    await next();
+});
+//Add JWToken Authentication service - JRozario
+app.UseAuthentication();*/
+
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 // custom jwt auth middleware
-app.UseMiddleware<JwtMiddleware>();
+//app.UseMiddleware<JwtMiddleware>();
 
 //app.UseEndpoints(endpoints =>
 //{
@@ -76,7 +162,7 @@ app.UseMiddleware<JwtMiddleware>();
 */
 
 app.MapControllerRoute(
-     name: "login_route",
+     name: "auth_route",
      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(

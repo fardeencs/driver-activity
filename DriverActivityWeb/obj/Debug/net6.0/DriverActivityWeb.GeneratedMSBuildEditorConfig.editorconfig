@@ -15,40 +15,44 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\SourceCode\freelance\git-repository\driver-activity\DriverActivityWeb
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxTaGFyZWRcX1ZhbGlkYXRpb25TY3JpcHRzUGFydGlhbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/AppUsers/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcQXBwVXNlcnNcQ3JlYXRlLmNzaHRtbA==
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBY2NvdW50XExvZ2luLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/AppUsers/Delete.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcQXBwVXNlcnNcRGVsZXRlLmNzaHRtbA==
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/AppUsers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBcHBVc2Vyc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/AppUsers/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcQXBwVXNlcnNcRGV0YWlscy5jc2h0bWw=
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/AppUsers/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBcHBVc2Vyc1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/AppUsers/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcQXBwVXNlcnNcRWRpdC5jc2h0bWw=
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/AppUsers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBcHBVc2Vyc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/AppUsers/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcQXBwVXNlcnNcSW5kZXguY3NodG1s
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/AppUsers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBcHBVc2Vyc1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cVmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/AppUsers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xBcHBVc2Vyc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxWaWV3c1xIb21lXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/Login/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcTG9naW5cX1ZpZXdTdGFydC5jc2h0bWw=
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxfVmlld0ltcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Areas/auth/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcYXV0aFxfVmlld1N0YXJ0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/SourceCode/freelance/git-repository/driver-activity/DriverActivityWeb/Views/Dashboard/Index.cshtml]

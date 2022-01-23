@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DriverActivityWeb.Areas.Login.Controllers
 {
-    [Area("login")]
+    [Area("auth")]
     public class HomeController : Controller
     {
         private IUserService _userService;
